@@ -1,0 +1,105 @@
+<header class="topbar">
+
+  <!-- Left: toggle + breadcrumbs -->
+  <div class="topbar-left">
+    <button
+      type="button"
+      class="icon-btn"
+      (click)="layout.toggle()"
+      pTooltip="Toggle sidebar"
+      tooltipPosition="bottom">
+      <i class="pi pi-bars"></i>
+    </button>
+
+    <nav class="crumbs" aria-label="Breadcrumb">
+      @for (crumb of crumbs(); track crumb.route; let last = $last) {
+        @if (last) {
+          <span class="crumb crumb--current">{{ crumb.label }}</span>
+        } @else {
+          <span class="crumb">{{ crumb.label }}</span>
+          <i class="pi pi-angle-right crumb-sep"></i>
+        }
+      }
+    </nav>
+  </div>
+
+  <!-- Center: global search -->
+  <button type="button" class="search-trigger" (click)="searchOpen.set(true)">
+    <i class="pi pi-search"></i>
+    <span class="search-text">Search…</span>
+    <kbd class="search-kbd">Ctrl K</kbd>
+  </button>
+
+  <!-- Right: actions + user -->
+  <div class="topbar-right">
+    <button
+      type="button"
+      class="icon-btn"
+      (click)="notifPanel.toggle($event)"
+      pTooltip="Notifications"
+      tooltipPosition="bottom">
+      <i class="pi pi-bell"></i>
+      @if (notificationCount > 0) {
+        <span class="notif-dot"></span>
+      }
+    </button>
+
+    <button
+      type="button"
+      class="icon-btn"
+      pTooltip="Help"
+      tooltipPosition="bottom">
+      <i class="pi pi-question-circle"></i>
+    </button>
+
+    <span class="topbar-divider"></span>
+
+    <button type="button" class="user-btn" (click)="userMenuRef.toggle($event)">
+      <span class="user-avatar">{{ auth.initials() }}</span>
+      <span class="user-info">
+        <span class="user-name">{{ auth.session()?.fullName }}</span>
+        <span class="user-role">{{ roleLabels() }}</span>
+      </span>
+      <i class="pi pi-angle-down user-caret"></i>
+    </button>
+  </div>
+
+</header>
+
+<!-- Notifications panel -->
+<p-popover #notifPanel [style]="{ width: '340px' }">
+  <div class="notif-head">
+    <span class="notif-title">Notifications</span>
+  </div>
+  <div class="notif-empty">
+    <i class="pi pi-bell"></i>
+    <p>You have no notifications.</p>
+    <small>Alerts about stock, orders and approvals will appear here.</small>
+  </div>
+</p-popover>
+
+<!-- User menu -->
+<p-menu #userMenuRef [model]="userMenu" [popup]="true" appendTo="body" />
+
+<!-- Global search -->
+<p-dialog
+  [(visible)]="searchOpen"
+  [modal]="true"
+  [draggable]="false"
+  [dismissableMask]="true"
+  [showHeader]="false"
+  [style]="{ width: '560px' }"
+  styleClass="search-dialog">
+  <div class="search-box">
+    <i class="pi pi-search"></i>
+    <input
+      pInputText
+      type="text"
+      placeholder="Search customers, products, orders…"
+      autofocus />
+  </div>
+  <div class="search-hint">
+    <i class="pi pi-info-circle"></i>
+    <span>Global search will be available once the business modules are in place.</span>
+  </div>
+</p-dialog>

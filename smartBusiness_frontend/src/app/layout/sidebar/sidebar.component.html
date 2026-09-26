@@ -1,0 +1,108 @@
+<aside class="sidebar" [class.sidebar--rail]="!layout.showLabels()">
+
+  <div class="sidebar-brand">
+    <span class="brand-mark">SC</span>
+    @if (layout.showLabels()) {
+      <span class="brand-text">
+        <span class="brand-name">SmartBusiness</span>
+        <!-- Which company the session belongs to — it is the whole isolation boundary -->
+        <span class="brand-env">{{ auth.session()?.companyName }}</span>
+      </span>
+    }
+  </div>
+
+  <nav class="sidebar-nav">
+    @for (section of sections(); track section.label) {
+
+      @if (section.label && layout.showLabels()) {
+        <div class="nav-section-label">{{ section.label }}</div>
+      } @else if (section.label) {
+        <div class="nav-section-rule"></div>
+      }
+
+      @for (item of section.items; track item.label) {
+
+        <!-- Group with children -->
+        @if (item.children) {
+          <button
+            type="button"
+            class="nav-item nav-item--group"
+            [class.is-open]="isGroupOpen(item.label)"
+            [class.is-active-parent]="isGroupActive(item, currentUrl)"
+            (click)="toggleGroup(item.label)"
+            [pTooltip]="layout.showLabels() ? '' : item.label"
+            tooltipPosition="right">
+            <i class="nav-icon" [class]="item.icon"></i>
+            @if (layout.showLabels()) {
+              <span class="nav-label">{{ item.label }}</span>
+              <i class="nav-chevron pi"
+                 [class.pi-chevron-down]="isGroupOpen(item.label)"
+                 [class.pi-chevron-right]="!isGroupOpen(item.label)"></i>
+            }
+          </button>
+
+          @if (isGroupOpen(item.label) && layout.showLabels()) {
+            <div class="nav-children">
+              @for (child of item.children; track child.label) {
+                @if (child.disabled) {
+                  <span class="nav-item nav-item--child is-disabled">
+                    <span class="nav-label">{{ child.label }}</span>
+                    <span class="nav-soon">Soon</span>
+                  </span>
+                } @else {
+                  <a
+                    class="nav-item nav-item--child"
+                    [routerLink]="child.route"
+                    routerLinkActive="is-active"
+                    [routerLinkActiveOptions]="{ exact: !!child.exact }"
+                    (click)="onNavigate()">
+                    <span class="nav-label">{{ child.label }}</span>
+                  </a>
+                }
+              }
+            </div>
+          }
+        }
+
+        <!-- Leaf item -->
+        @else if (item.disabled) {
+          <span
+            class="nav-item is-disabled"
+            [pTooltip]="layout.showLabels() ? '' : item.label"
+            tooltipPosition="right">
+            <i class="nav-icon" [class]="item.icon"></i>
+            @if (layout.showLabels()) {
+              <span class="nav-label">{{ item.label }}</span>
+              <span class="nav-soon">Soon</span>
+            }
+          </span>
+        }
+
+        @else {
+          <a
+            class="nav-item"
+            [routerLink]="item.route"
+            routerLinkActive="is-active"
+            [routerLinkActiveOptions]="{ exact: !!item.exact }"
+            (click)="onNavigate()"
+            [pTooltip]="layout.showLabels() ? '' : item.label"
+            tooltipPosition="right">
+            <i class="nav-icon" [class]="item.icon"></i>
+            @if (layout.showLabels()) {
+              <span class="nav-label">{{ item.label }}</span>
+            }
+          </a>
+        }
+      }
+    }
+  </nav>
+
+  <div class="sidebar-footer">
+    @if (layout.showLabels()) {
+      <span class="version">Version 1.0.0</span>
+    } @else {
+      <span class="version">1.0</span>
+    }
+  </div>
+
+</aside>

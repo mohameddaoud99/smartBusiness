@@ -1,0 +1,97 @@
+<p-dialog
+  [(visible)]="visible"
+  [modal]="true"
+  [draggable]="false"
+  [closable]="!saving()"
+  [style]="{ width: '480px' }"
+  [header]="(family === 'supplier' ? 'Pay supplier' : 'Add payment') + (invoice()?.reference ? ' — ' + invoice()?.reference : '')"
+  appendTo="body"
+  (onHide)="close()">
+
+  <form [formGroup]="form" (ngSubmit)="submit()">
+
+    @if (invoice(); as current) {
+      <p class="balance-line">
+        Still due <strong>{{ current.balance | number: '1.3-3' }}</strong>
+      </p>
+    }
+
+    <div class="field-grid">
+      <div class="field">
+        <label for="paymentAmount">Amount <span class="required">*</span></label>
+        <p-inputnumber
+          inputId="paymentAmount"
+          formControlName="amount"
+          [min]="0"
+          [minFractionDigits]="3"
+          [maxFractionDigits]="3"
+          styleClass="w-full"
+          inputStyleClass="w-full" />
+        @if (isInvalid('amount')) {
+          <small class="p-error">{{ errorFor('amount') }}</small>
+        }
+      </div>
+
+      <div class="field">
+        <label for="paymentDate">Date <span class="required">*</span></label>
+        <p-datepicker
+          inputId="paymentDate"
+          formControlName="paymentDate"
+          dateFormat="dd/mm/yy"
+          [showIcon]="true"
+          styleClass="w-full" />
+        @if (isInvalid('paymentDate')) {
+          <small class="p-error">{{ errorFor('paymentDate') }}</small>
+        }
+      </div>
+    </div>
+
+    <div class="field-grid">
+      <div class="field">
+        <label for="paymentMethod">Method <span class="required">*</span></label>
+        <p-select
+          inputId="paymentMethod"
+          formControlName="method"
+          [options]="methods"
+          optionLabel="label"
+          optionValue="value"
+          styleClass="w-full" />
+      </div>
+
+      <div class="field">
+        <label for="paymentReference">Reference</label>
+        <input
+          pInputText
+          id="paymentReference"
+          formControlName="reference"
+          class="w-full"
+          placeholder="Cheque or transfer number" />
+        @if (isInvalid('reference')) {
+          <small class="p-error">{{ errorFor('reference') }}</small>
+        }
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="paymentNotes">Notes</label>
+      <textarea pTextarea id="paymentNotes" formControlName="notes" rows="2" class="w-full"></textarea>
+    </div>
+
+    <div class="form-actions">
+      <p-button
+        label="Cancel"
+        severity="secondary"
+        [outlined]="true"
+        size="small"
+        [disabled]="saving()"
+        (onClick)="close()" />
+      <p-button
+        label="Record payment"
+        type="submit"
+        size="small"
+        [loading]="saving()" />
+    </div>
+
+  </form>
+
+</p-dialog>

@@ -1,0 +1,151 @@
+<app-page-header
+  title="Products"
+  description="What you sell and buy — goods and services">
+  <p-button
+    *appHasPermission="'PRODUCT_CREATE'"
+    label="New product"
+    icon="pi pi-plus"
+    size="small"
+    (onClick)="openCreate()" />
+</app-page-header>
+
+<div class="surface-panel">
+
+  <div class="table-toolbar">
+    <p-iconfield styleClass="toolbar-search">
+      <p-inputicon styleClass="pi pi-search" />
+      <input
+        pInputText
+        type="text"
+        placeholder="Search by name, reference or barcode"
+        [(ngModel)]="searchTerm"
+        (ngModelChange)="onSearchChange()" />
+    </p-iconfield>
+
+    <span class="table-toolbar-spacer"></span>
+
+    <p-select
+      [(ngModel)]="kindFilter"
+      (ngModelChange)="onFilterChange()"
+      [options]="kindOptions"
+      optionLabel="label"
+      optionValue="value"
+      placeholder="All kinds"
+      [showClear]="true"
+      size="small"
+      styleClass="toolbar-filter" />
+
+    @if (hasFilters) {
+      <p-button
+        icon="pi pi-filter-slash"
+        severity="secondary"
+        [text]="true"
+        size="small"
+        pTooltip="Clear filters"
+        tooltipPosition="bottom"
+        (onClick)="clearFilters()" />
+    }
+  </div>
+
+  <p-table
+    [value]="products()"
+    [loading]="loading()"
+    [lazy]="true"
+    (onLazyLoad)="load($event)"
+    [paginator]="true"
+    [rows]="10"
+    [rowsPerPageOptions]="[10, 25, 50]"
+    [totalRecords]="totalRecords()"
+    [sortMode]="'single'"
+    dataKey="id"
+    styleClass="p-datatable-sm"
+    responsiveLayout="scroll"
+    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} products"
+    [showCurrentPageReport]="true">
+
+    <ng-template pTemplate="header">
+      <tr>
+        <th style="width: 64px">Photo</th>
+        <th pSortableColumn="reference" style="width: 110px">
+          Reference <p-sortIcon field="reference" />
+        </th>
+        <th pSortableColumn="name" style="min-width: 220px">
+          Name <p-sortIcon field="name" />
+        </th>
+        <th style="width: 100px">Kind</th>
+        <th style="min-width: 140px">Category</th>
+        <th style="min-width: 110px">Unit</th>
+        <th style="width: 110px">Sale price</th>
+        <th pSortableColumn="createdAt" style="min-width: 120px">
+          Added <p-sortIcon field="createdAt" />
+        </th>
+        <th style="width: 56px"></th>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="body" let-product>
+      <tr class="product-row" (click)="openEdit(product)">
+        <td>
+          <span class="product-thumb">
+            @if (product.imageDataUri) {
+              <img [src]="product.imageDataUri" [alt]="product.name" />
+            } @else {
+              <i class="pi pi-image"></i>
+            }
+          </span>
+        </td>
+        <td><span class="mono">{{ product.reference }}</span></td>
+        <td class="text-strong">{{ product.name }}</td>
+        <td>
+          <p-tag
+            [value]="kindLabel(product.kind)"
+            [severity]="product.kind === 'GOOD' ? 'info' : 'secondary'" />
+        </td>
+        <td class="text-muted">{{ product.category?.name || '—' }}</td>
+        <td class="text-muted">{{ product.unit }}</td>
+        <td>{{ product.salePrice != null ? (product.salePrice | number: '1.3-3') : '—' }}</td>
+        <td class="text-muted">{{ product.createdAt | date: 'dd MMM yyyy' }}</td>
+        <td>
+          <p-button
+            icon="pi pi-ellipsis-v"
+            severity="secondary"
+            [text]="true"
+            size="small"
+            (onClick)="buildRowMenu(product); rowMenu.toggle($event); $event.stopPropagation()" />
+        </td>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td colspan="9" class="empty-state">
+          <i class="pi pi-box empty-icon"></i>
+          @if (hasFilters) {
+            <p class="empty-title">No products match your filters</p>
+            <p class="empty-text">Try changing the search term or clearing the filters.</p>
+            <p-button
+              label="Clear filters"
+              icon="pi pi-filter-slash"
+              size="small"
+              [outlined]="true"
+              (onClick)="clearFilters()" />
+          } @else {
+            <p class="empty-title">No products yet</p>
+            <p class="empty-text">Add your first product or service to get started.</p>
+            <p-button
+              *appHasPermission="'PRODUCT_CREATE'"
+              label="New product"
+              icon="pi pi-plus"
+              size="small"
+              (onClick)="openCreate()" />
+          }
+        </td>
+      </tr>
+    </ng-template>
+
+  </p-table>
+</div>
+
+<p-menu #rowMenu [model]="rowMenuItems" [popup]="true" appendTo="body" />
+
+<app-product-form (saved)="refresh()" />

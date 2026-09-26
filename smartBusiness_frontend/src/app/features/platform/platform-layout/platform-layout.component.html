@@ -1,0 +1,25 @@
+<div class="platform-shell">
+
+  <header class="platform-topbar">
+    <div class="platform-brand">
+      <i class="pi pi-shield"></i>
+      <span>SmartBusiness Platform</span>
+    </div>
+
+    <div class="platform-topbar-right">
+      <span class="platform-admin-email">{{ auth.session()?.email }}</span>
+      <p-button
+        label="Sign out"
+        icon="pi pi-sign-out"
+        severity="secondary"
+        [text]="true"
+        size="small"
+        (onClick)="signOut()" />
+    </div>
+  </header>
+
+  <main class="platform-content">
+    <router-outlet />
+  </main>
+
+</div>

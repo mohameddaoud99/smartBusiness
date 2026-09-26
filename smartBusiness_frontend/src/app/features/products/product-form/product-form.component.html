@@ -1,0 +1,201 @@
+<p-dialog
+  [(visible)]="visible"
+  [modal]="true"
+  [draggable]="false"
+  [closable]="!saving()"
+  [style]="{ width: '640px' }"
+  [contentStyle]="{ 'max-height': '76vh', overflow: 'auto' }"
+  [header]="title()"
+  (onHide)="close()">
+
+  <form [formGroup]="form" (ngSubmit)="submit()">
+
+    <div class="type-toggle">
+      @for (option of kindOptions; track option.value) {
+        <label class="type-option" [class.selected]="form.controls['type'].value === option.value">
+          <p-radiobutton
+            formControlName="type"
+            [value]="option.value"
+            [inputId]="'kind-' + option.value" />
+          <span>{{ option.label }}</span>
+        </label>
+      }
+    </div>
+
+    <p class="form-section">Identity</p>
+
+    <app-image-gallery
+      label="Photos"
+      [images]="galleryImages()"
+      [max]="maxImages"
+      [saving]="imageSaving()"
+      (fileSelected)="onImageSelected($event)"
+      (removeRequested)="confirmRemoveImage($event)" />
+
+    <div class="field-grid">
+      <div class="field">
+        <label for="name">Name <span class="required">*</span></label>
+        <input pInputText id="name" formControlName="name" class="w-full"
+               [class.ng-invalid]="isInvalid('name')" [class.ng-dirty]="isInvalid('name')" />
+        @if (isInvalid('name')) {
+          <small class="p-error">{{ errorFor('name') }}</small>
+        }
+      </div>
+
+      <div class="field">
+        <label for="reference">Reference</label>
+        <input pInputText id="reference" formControlName="reference" class="w-full"
+               placeholder="Auto-generated if blank" />
+      </div>
+
+      <div class="field">
+        <label for="barcode">Barcode</label>
+        <input pInputText id="barcode" formControlName="barcode" class="w-full" />
+      </div>
+
+      <div class="field">
+        <label for="unit">Unit <span class="required">*</span></label>
+        <p-select
+          inputId="unit"
+          formControlName="unit"
+          [options]="unitOptions"
+          optionLabel="label"
+          optionValue="value"
+          styleClass="w-full" />
+      </div>
+
+      <div class="field">
+        <label for="purpose">Used for <span class="required">*</span></label>
+        <p-select
+          inputId="purpose"
+          formControlName="purpose"
+          [options]="purposeOptions"
+          optionLabel="label"
+          optionValue="value"
+          styleClass="w-full" />
+      </div>
+
+      <div class="field">
+        <label for="categoryId">Category</label>
+        <p-select
+          inputId="categoryId"
+          formControlName="categoryId"
+          [options]="categories()"
+          optionLabel="name"
+          optionValue="id"
+          placeholder="None"
+          [showClear]="true"
+          [filter]="true"
+          styleClass="w-full" />
+      </div>
+
+      <div class="field">
+        <label for="brandId">Brand</label>
+        <p-select
+          inputId="brandId"
+          formControlName="brandId"
+          [options]="brands()"
+          optionLabel="name"
+          optionValue="id"
+          placeholder="None"
+          [showClear]="true"
+          [filter]="true"
+          styleClass="w-full" />
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="description">Description</label>
+      <textarea pTextarea id="description" formControlName="description" rows="2" class="w-full"></textarea>
+    </div>
+
+    <p class="form-section">Pricing &amp; taxes</p>
+
+    <div class="field-grid">
+      <div class="field">
+        <label for="salePrice">Sale price</label>
+        <p-inputnumber
+          inputId="salePrice"
+          formControlName="salePrice"
+          [min]="0"
+          [minFractionDigits]="3"
+          [maxFractionDigits]="3"
+          styleClass="w-full"
+          [inputStyleClass]="'w-full'" />
+      </div>
+
+      <div class="field">
+        <label for="purchasePrice">Purchase price</label>
+        <p-inputnumber
+          inputId="purchasePrice"
+          formControlName="purchasePrice"
+          [min]="0"
+          [minFractionDigits]="3"
+          [maxFractionDigits]="3"
+          styleClass="w-full"
+          [inputStyleClass]="'w-full'" />
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="taxIds">Default taxes</label>
+      <p-multiselect
+        inputId="taxIds"
+        formControlName="taxIds"
+        [options]="taxes()"
+        optionLabel="name"
+        optionValue="id"
+        placeholder="None"
+        [filter]="true"
+        display="chip"
+        styleClass="w-full" />
+      <small class="field-hint">Pre-selected when this product is added to a document line.</small>
+    </div>
+
+    @if (isGood) {
+      <div class="field-checkbox">
+        <p-checkbox formControlName="allowNegativeStock" [binary]="true" inputId="allowNegativeStock" />
+        <label for="allowNegativeStock">Allow selling past the available stock</label>
+      </div>
+
+      <div class="field">
+        <label for="minStock">Minimum stock</label>
+        <p-inputnumber
+          inputId="minStock"
+          formControlName="minStock"
+          [min]="0"
+          [minFractionDigits]="0"
+          [maxFractionDigits]="3"
+          placeholder="No alert"
+          styleClass="w-full"
+          [inputStyleClass]="'w-full'" />
+        <small class="field-hint">The product is flagged "low" on the stock page once its available quantity falls to this.</small>
+      </div>
+    }
+
+    <p class="form-section">Notes</p>
+
+    <div class="field">
+      <label for="notes">Private note</label>
+      <textarea pTextarea id="notes" formControlName="notes" rows="3" class="w-full"></textarea>
+      <small class="field-hint">Internal use only — never shown on a document.</small>
+    </div>
+
+    <div class="form-actions">
+      <p-button
+        label="Cancel"
+        severity="secondary"
+        [outlined]="true"
+        size="small"
+        [disabled]="saving()"
+        (onClick)="close()" />
+      <p-button
+        [label]="editingId() ? 'Save changes' : 'Create product'"
+        type="submit"
+        size="small"
+        [loading]="saving()" />
+    </div>
+
+  </form>
+
+</p-dialog>

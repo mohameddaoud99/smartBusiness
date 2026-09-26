@@ -1,0 +1,43 @@
+<p-dialog
+  [(visible)]="visible"
+  [modal]="true"
+  [draggable]="false"
+  [closable]="!saving()"
+  [style]="{ width: '440px' }"
+  [header]="title()"
+  (onHide)="close()">
+
+  <p class="modules-intro">
+    Administrative areas (Users, Roles, Branches, Company settings) are always
+    available — only business modules can be granted or withheld.
+  </p>
+
+  <div class="modules-list">
+    @for (option of moduleOptions; track option.value) {
+      <label class="module-row" [class.is-on]="isChecked(option.value)">
+        <p-checkbox
+          [binary]="true"
+          [ngModel]="isChecked(option.value)"
+          [inputId]="option.value"
+          (onChange)="toggle(option.value)" />
+        <span>{{ option.label }}</span>
+      </label>
+    }
+  </div>
+
+  <div class="form-actions">
+    <p-button
+      label="Cancel"
+      severity="secondary"
+      [outlined]="true"
+      size="small"
+      [disabled]="saving()"
+      (onClick)="close()" />
+    <p-button
+      label="Save"
+      size="small"
+      [loading]="saving()"
+      (onClick)="submit()" />
+  </div>
+
+</p-dialog>

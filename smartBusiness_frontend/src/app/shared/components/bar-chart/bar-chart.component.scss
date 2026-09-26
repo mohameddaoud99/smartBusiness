@@ -1,0 +1,48 @@
+.bars {
+  display: flex;
+  align-items: stretch;
+  gap: 0.75rem;
+  height: 11rem;
+}
+
+.bar-column {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.bar-value {
+  font-size: 0.6875rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--p-surface-500);
+  white-space: nowrap;
+}
+
+.bar-track {
+  flex: 1;
+  width: 100%;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.bar {
+  width: 70%;
+  max-width: 3rem;
+  min-height: 2px;
+  border-radius: 4px 4px 0 0;
+  background: var(--p-primary-500);
+  transition: height 0.2s ease;
+
+  &.is-empty {
+    background: var(--p-surface-300);
+  }
+}
+
+.bar-label {
+  font-size: 0.6875rem;
+  color: var(--p-surface-500);
+}

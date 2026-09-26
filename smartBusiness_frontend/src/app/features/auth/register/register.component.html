@@ -1,0 +1,159 @@
+<div class="auth-page">
+
+  <aside class="auth-brand">
+    <div class="brand-mark">
+      <i class="pi pi-chart-line"></i>
+      <span>SmartBusiness</span>
+    </div>
+
+    <div class="brand-pitch">
+      <h1>Set up your company in a minute.</h1>
+      <p>Create the account, invite your team, assign roles. Nothing else to configure.</p>
+    </div>
+
+    <ul class="brand-points">
+      <li><i class="pi pi-check"></i> Standard roles ready to use</li>
+      <li><i class="pi pi-check"></i> Your data stays yours alone</li>
+      <li><i class="pi pi-check"></i> Add branches whenever you need them</li>
+    </ul>
+  </aside>
+
+  <main class="auth-panel">
+    <div class="auth-card">
+
+      <header class="auth-head">
+        <h2>Create your company account</h2>
+        <p>You become the administrator and can invite your team right away.</p>
+      </header>
+
+      @if (errorMessage()) {
+        <p-message severity="error" styleClass="w-full auth-error">
+          {{ errorMessage() }}
+        </p-message>
+      }
+
+      <form [formGroup]="form" (ngSubmit)="submit()">
+
+        <div class="field">
+          <label for="companyName">Company name <span class="required">*</span></label>
+          <input
+            pInputText
+            id="companyName"
+            formControlName="companyName"
+            class="w-full"
+            placeholder="ABC Distribution"
+            [class.ng-invalid]="isInvalid('companyName')"
+            [class.ng-dirty]="isInvalid('companyName')" />
+          @if (isInvalid('companyName')) {
+            <small class="p-error">{{ errorFor('companyName') }}</small>
+          }
+        </div>
+
+        <div class="field-grid">
+          <div class="field">
+            <label for="firstName">First name <span class="required">*</span></label>
+            <input
+              pInputText
+              id="firstName"
+              formControlName="firstName"
+              class="w-full"
+              [class.ng-invalid]="isInvalid('firstName')"
+              [class.ng-dirty]="isInvalid('firstName')" />
+            @if (isInvalid('firstName')) {
+              <small class="p-error">{{ errorFor('firstName') }}</small>
+            }
+          </div>
+
+          <div class="field">
+            <label for="lastName">Last name <span class="required">*</span></label>
+            <input
+              pInputText
+              id="lastName"
+              formControlName="lastName"
+              class="w-full"
+              [class.ng-invalid]="isInvalid('lastName')"
+              [class.ng-dirty]="isInvalid('lastName')" />
+            @if (isInvalid('lastName')) {
+              <small class="p-error">{{ errorFor('lastName') }}</small>
+            }
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="email">Work email <span class="required">*</span></label>
+          <input
+            pInputText
+            id="email"
+            type="email"
+            formControlName="email"
+            class="w-full"
+            autocomplete="username"
+            placeholder="you@company.com"
+            [class.ng-invalid]="isInvalid('email')"
+            [class.ng-dirty]="isInvalid('email')" />
+          @if (isInvalid('email')) {
+            <small class="p-error">{{ errorFor('email') }}</small>
+          } @else {
+            <small class="field-hint">This is the address you will sign in with.</small>
+          }
+        </div>
+
+        <div class="field-grid">
+          <div class="field">
+            <label for="password">Password <span class="required">*</span></label>
+            <p-password
+              inputId="password"
+              formControlName="password"
+              [feedback]="false"
+              [toggleMask]="true"
+              styleClass="w-full"
+              inputStyleClass="w-full"
+              autocomplete="new-password" />
+            @if (isInvalid('password')) {
+              <small class="p-error">{{ errorFor('password') }}</small>
+            } @else {
+              <small class="field-hint">At least 8 characters.</small>
+            }
+          </div>
+
+          <div class="field">
+            <label for="confirmPassword">Confirm password <span class="required">*</span></label>
+            <p-password
+              inputId="confirmPassword"
+              formControlName="confirmPassword"
+              [feedback]="false"
+              [toggleMask]="true"
+              styleClass="w-full"
+              inputStyleClass="w-full"
+              autocomplete="new-password" />
+            @if (passwordsDiffer) {
+              <small class="p-error">The two passwords do not match.</small>
+            }
+          </div>
+        </div>
+
+        <p-button
+          label="Create account"
+          type="submit"
+          styleClass="w-full"
+          [loading]="submitting()" />
+
+        <p class="auth-note">
+          <i class="pi pi-info-circle"></i>
+          <span>
+            Your account is created with the Company Administrator role, and the standard
+            roles are set up for you. You can adjust them afterwards.
+          </span>
+        </p>
+
+      </form>
+
+      <p class="auth-switch">
+        Already have an account?
+        <a routerLink="/login">Sign in</a>
+      </p>
+
+    </div>
+  </main>
+
+</div>

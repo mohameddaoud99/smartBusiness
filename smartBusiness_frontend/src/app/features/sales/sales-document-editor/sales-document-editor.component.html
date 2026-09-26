@@ -1,0 +1,338 @@
+<app-page-header [title]="title()" [description]="document()?.customerName ?? config.description">
+
+  @if (document(); as current) {
+    <p-tag [value]="statusLabel(current.status, type)" [severity]="statusSeverity(current.status, type)" />
+  }
+
+  <p-button
+    label="Back to list"
+    icon="pi pi-arrow-left"
+    severity="secondary"
+    [outlined]="true"
+    size="small"
+    [routerLink]="config.path" />
+
+  @if (!isNew()) {
+    <p-button
+      label="Print"
+      icon="pi pi-print"
+      severity="secondary"
+      [outlined]="true"
+      size="small"
+      (onClick)="print()" />
+  }
+
+  @if (readOnly()) {
+    @for (action of actions(); track action.label) {
+      <p-button
+        *appHasPermission="action.permission"
+        [label]="action.label"
+        [icon]="action.icon"
+        [severity]="action.severity"
+        [outlined]="!!action.outlined"
+        size="small"
+        (onClick)="action.run()" />
+    }
+  } @else if (!loading()) {
+    @if (!isNew()) {
+      <p-button
+        *appHasPermission="'SALE_UPDATE'"
+        label="Delete"
+        icon="pi pi-trash"
+        severity="danger"
+        [outlined]="true"
+        size="small"
+        [disabled]="saving()"
+        (onClick)="confirmDelete()" />
+    }
+    <p-button
+      *appHasPermission="isNew() ? 'SALE_CREATE' : 'SALE_UPDATE'"
+      label="Save draft"
+      icon="pi pi-save"
+      severity="secondary"
+      size="small"
+      [loading]="saving()"
+      (onClick)="saveDraft()" />
+    <p-button
+      *appHasPermission="isNew() ? 'SALE_CREATE' : 'SALE_UPDATE'"
+      label="Issue"
+      icon="pi pi-send"
+      size="small"
+      [disabled]="saving()"
+      (onClick)="confirmIssue()" />
+  }
+</app-page-header>
+
+@if (loading()) {
+  <div class="surface-panel loading-panel">
+    <i class="pi pi-spin pi-spinner"></i> Loading…
+  </div>
+} @else {
+
+  <form [formGroup]="form" class="editor" [class.is-readonly]="readOnly()" (ngSubmit)="saveDraft()">
+
+    <div class="surface-panel editor-panel">
+
+      @if (document(); as current) {
+        @if (current.sourceId && current.sourceType) {
+          <p class="link-line">
+            <i class="pi pi-link"></i>
+            Made from
+            <a [routerLink]="[pathFor(current.sourceType!), current.sourceId]">
+              {{ current.sourceReference }}
+            </a>
+          </p>
+        }
+        @for (derived of current.derived; track derived.id) {
+          <p class="link-line">
+            <i class="pi pi-link"></i>
+            Turned into
+            <a [routerLink]="[pathFor(derived.type), derived.id]">
+              {{ derived.reference ?? 'a draft ' + configs[derived.type].label.toLowerCase() }}
+            </a>
+            <p-tag [value]="statusLabel(derived.status, derived.type)" [severity]="statusSeverity(derived.status, derived.type)" />
+          </p>
+        }
+      }
+
+      <p class="form-section">Customer &amp; dates</p>
+
+      <div class="field-grid">
+        <div class="field">
+          <label for="customerId">Customer <span class="required">*</span></label>
+          <p-select
+            inputId="customerId"
+            formControlName="customerId"
+            [options]="customers()"
+            optionLabel="name"
+            optionValue="id"
+            placeholder="Select a customer"
+            [filter]="true"
+            filterBy="name"
+            (onFilter)="onCustomerFilter($event.filter)"
+            styleClass="w-full" />
+          @if (isInvalid('customerId')) {
+            <small class="p-error">Customer is required</small>
+          }
+        </div>
+
+        <div class="field">
+          <label for="issueDate">Date <span class="required">*</span></label>
+          <p-datepicker
+            inputId="issueDate"
+            formControlName="issueDate"
+            dateFormat="dd/mm/yy"
+            [showIcon]="true"
+            styleClass="w-full" />
+        </div>
+
+        <div class="field">
+          <label for="dueDate">{{ type === 'QUOTE' ? 'Valid until' : 'Due date' }}</label>
+          <p-datepicker
+            inputId="dueDate"
+            formControlName="dueDate"
+            dateFormat="dd/mm/yy"
+            [showIcon]="true"
+            [showClear]="true"
+            styleClass="w-full" />
+        </div>
+
+        @if (hasWarehouse) {
+          <div class="field">
+            <label for="warehouseId">Warehouse <span class="required">*</span></label>
+            <p-select
+              inputId="warehouseId"
+              formControlName="warehouseId"
+              [options]="warehouses()"
+              optionLabel="name"
+              optionValue="id"
+              placeholder="Select a warehouse"
+              styleClass="w-full" />
+            @if (isInvalid('warehouseId')) {
+              <small class="p-error">Warehouse is required</small>
+            }
+          </div>
+        }
+
+        <div class="field">
+          <label for="taxIds">Taxes on the document</label>
+          <p-multiselect
+            inputId="taxIds"
+            formControlName="taxIds"
+            [options]="documentTaxes()"
+            optionLabel="name"
+            optionValue="id"
+            placeholder="None"
+            display="chip"
+            styleClass="w-full" />
+        </div>
+      </div>
+
+      <p class="form-section">Lines</p>
+
+      <div class="lines-scroll">
+        <table class="lines-table" formArrayName="lines">
+          <thead>
+            <tr>
+              <th class="col-product">Product</th>
+              <th class="col-designation">Designation <span class="required">*</span></th>
+              <th class="col-qty">Qty</th>
+              <th class="col-price">Unit price</th>
+              <th class="col-discount">Disc. %</th>
+              <th class="col-vat">VAT</th>
+              <th class="col-total">Total excl. tax</th>
+              @if (!readOnly()) {
+                <th class="col-actions"></th>
+              }
+            </tr>
+          </thead>
+          <tbody>
+            @for (line of lines.controls; track line; let i = $index) {
+              <tr [formGroupName]="i">
+                <td>
+                  <p-select
+                    formControlName="productId"
+                    [options]="sellableProducts()"
+                    optionLabel="name"
+                    optionValue="id"
+                    placeholder="Free line"
+                    [showClear]="true"
+                    [filter]="true"
+                    filterBy="name,reference"
+                    size="small"
+                    appendTo="body"
+                    (onChange)="onProductPicked(i, $event.value)"
+                    styleClass="w-full" />
+                </td>
+                <td>
+                  <input pInputText formControlName="designation" class="w-full p-inputtext-sm" />
+                </td>
+                <td>
+                  <p-inputnumber
+                    formControlName="quantity"
+                    [min]="0.001"
+                    [max]="sourceLeft(i) ?? undefined"
+                    [minFractionDigits]="0"
+                    [maxFractionDigits]="3"
+                    size="small"
+                    styleClass="w-full"
+                    inputStyleClass="w-full" />
+                  @if (sourceLeft(i) !== null && !readOnly()) {
+                    <small class="qty-hint">{{ sourceLeft(i) | number: '1.0-3' }} left {{ takingWord }}</small>
+                  }
+                  @if (fulfilment(i); as text) {
+                    <small class="qty-hint">{{ text }}</small>
+                  }
+                </td>
+                <td>
+                  <p-inputnumber
+                    formControlName="unitPrice"
+                    [min]="0"
+                    [minFractionDigits]="3"
+                    [maxFractionDigits]="3"
+                    size="small"
+                    styleClass="w-full"
+                    inputStyleClass="w-full" />
+                </td>
+                <td>
+                  <p-inputnumber
+                    formControlName="discountRate"
+                    [min]="0"
+                    [max]="100"
+                    [maxFractionDigits]="2"
+                    size="small"
+                    styleClass="w-full"
+                    inputStyleClass="w-full" />
+                </td>
+                <td>
+                  <p-select
+                    formControlName="vatTaxId"
+                    [options]="vatTaxes()"
+                    optionLabel="name"
+                    optionValue="id"
+                    placeholder="No VAT"
+                    [showClear]="true"
+                    size="small"
+                    appendTo="body"
+                    styleClass="w-full" />
+                </td>
+                <td class="amount">
+                  {{ lineTotal(i) !== undefined ? (lineTotal(i) | number: '1.3-3') : '—' }}
+                </td>
+                @if (!readOnly()) {
+                  <td>
+                    <p-button
+                      icon="pi pi-trash"
+                      severity="secondary"
+                      [text]="true"
+                      size="small"
+                      pTooltip="Remove line"
+                      [disabled]="lines.length === 1"
+                      (onClick)="removeLine(i)" />
+                  </td>
+                }
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      @if (!readOnly()) {
+        <p-button
+          label="Add line"
+          icon="pi pi-plus"
+          severity="secondary"
+          [outlined]="true"
+          size="small"
+          styleClass="add-line"
+          (onClick)="addLine()" />
+      }
+
+      @if (totals(); as summary) {
+        <div class="totals">
+          <div class="totals-row">
+            <span>Subtotal excl. tax</span>
+            <span class="amount">{{ summary.subtotal | number: '1.3-3' }}</span>
+          </div>
+          @for (tax of summary.taxes; track $index) {
+            <div class="totals-row">
+              <span>
+                {{ tax.name }}
+                @if (tax.base != null && tax.kind !== 'FIXED_PER_DOCUMENT') {
+                  <small class="text-muted">on {{ tax.base | number: '1.3-3' }}</small>
+                }
+              </span>
+              <span class="amount">{{ tax.amount | number: '1.3-3' }}</span>
+            </div>
+          }
+          <div class="totals-row totals-net">
+            <span>Net to pay</span>
+            <span class="amount">{{ summary.total | number: '1.3-3' }}</span>
+          </div>
+        </div>
+      } @else {
+        <p class="totals-hint">Totals appear once the customer and the lines are filled in.</p>
+      }
+
+      <p class="form-section">Notes &amp; terms</p>
+
+      <div class="field-grid">
+        <div class="field">
+          <label for="notes">Notes</label>
+          <textarea pTextarea id="notes" formControlName="notes" rows="3" class="w-full"></textarea>
+        </div>
+        <div class="field">
+          <label for="terms">General terms of sale</label>
+          <textarea pTextarea id="terms" formControlName="terms" rows="3" class="w-full"></textarea>
+        </div>
+      </div>
+
+    </div>
+  </form>
+
+  @if (document(); as current) {
+    @if (type === 'INVOICE' && current.status !== 'DRAFT') {
+      <app-invoice-payments [document]="current" (changed)="reloadDocument()" />
+    }
+  }
+}

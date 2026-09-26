@@ -1,0 +1,75 @@
+.toolbar-search {
+  flex: 1;
+  max-width: 320px;
+
+  input {
+    width: 100%;
+    font-size: 0.8125rem;
+  }
+}
+
+:host ::ng-deep .toolbar-filter {
+  min-width: 150px;
+
+  .p-select-label {
+    font-size: 0.8125rem;
+  }
+}
+
+.customer-row {
+  cursor: pointer;
+}
+
+.customer-cell {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.customer-initials {
+  width: 26px;
+  height: 26px;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  border-radius: 6px;
+  background: var(--p-primary-50);
+  color: var(--p-primary-700);
+  font-size: 0.625rem;
+  font-weight: 700;
+
+  &.is-individual {
+    border-radius: 50%;
+    background: var(--p-surface-100);
+    color: var(--p-surface-600);
+  }
+}
+
+.customer-name {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.25;
+  font-weight: 500;
+  color: var(--p-surface-900);
+}
+
+.customer-contact {
+  font-size: 0.6875rem;
+  font-weight: 400;
+  color: var(--p-surface-500);
+}
+
+.mono {
+  font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, monospace;
+  font-size: 0.75rem;
+  color: var(--p-surface-600);
+}
+
+@media (max-width: 768px) {
+  .toolbar-search {
+    max-width: none;
+    flex: 1 1 100%;
+  }
+
+  .table-toolbar-spacer { display: none; }
+}

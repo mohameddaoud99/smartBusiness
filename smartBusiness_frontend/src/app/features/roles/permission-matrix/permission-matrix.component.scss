@@ -1,0 +1,111 @@
+.matrix {
+  border: 1px solid var(--p-surface-200);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.matrix-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.5rem 0.75rem;
+  background: var(--p-surface-50);
+  border-bottom: 1px solid var(--p-surface-200);
+  font-size: 0.75rem;
+  color: var(--p-surface-600);
+}
+
+.matrix-toolbar-spacer {
+  flex: 1;
+}
+
+.matrix-link {
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  color: var(--p-primary-color);
+  cursor: pointer;
+
+  &:hover { text-decoration: underline; }
+}
+
+.matrix-sep {
+  color: var(--p-surface-300);
+}
+
+.matrix-body {
+  max-height: 380px;
+  overflow-y: auto;
+}
+
+.matrix-row {
+  display: grid;
+  grid-template-columns: 170px 1fr;
+  gap: 0.75rem;
+  padding: 0.625rem 0.75rem;
+  border-bottom: 1px solid var(--p-surface-100);
+
+  &:last-child { border-bottom: none; }
+  &:hover { background: var(--p-surface-50); }
+}
+
+.matrix-module {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  label {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--p-surface-700);
+    cursor: pointer;
+  }
+}
+
+/* Four columns keeps the grid aligned across modules, whatever their action count */
+.matrix-actions {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.375rem 0.5rem;
+}
+
+.matrix-cell {
+  display: flex;
+  align-items: center;
+  gap: 0.4375rem;
+  padding: 0.1875rem 0.25rem;
+  border-radius: 4px;
+  cursor: pointer;
+  min-width: 0;
+}
+
+.matrix-cell-label {
+  font-size: 0.75rem;
+  color: var(--p-surface-600);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.matrix-cell.is-on .matrix-cell-label {
+  color: var(--p-surface-900);
+  font-weight: 500;
+}
+
+.matrix--readonly {
+  .matrix-cell,
+  .matrix-module label {
+    cursor: default;
+  }
+}
+
+@media (max-width: 900px) {
+  .matrix-row {
+    grid-template-columns: 1fr;
+  }
+
+  .matrix-actions {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

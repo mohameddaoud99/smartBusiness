@@ -1,0 +1,88 @@
+<p-dialog
+  [(visible)]="visible"
+  [modal]="true"
+  [draggable]="false"
+  [closable]="!saving()"
+  [style]="{ width: '760px' }"
+  [header]="locked() ? 'Standard role' : (editing() ? 'Edit role' : 'New role')"
+  (onHide)="close()">
+
+  <form [formGroup]="form" (ngSubmit)="submit()">
+
+    @if (locked()) {
+      <p-message severity="info" styleClass="w-full form-note locked-note">
+        This role ships with the application, so it cannot be edited or deleted.
+        Create a custom role if you need a different set of permissions.
+      </p-message>
+    }
+
+
+    <p class="form-section">Role</p>
+
+    <div class="field">
+      <label for="label">Name <span class="required">*</span></label>
+      <input
+        pInputText
+        id="label"
+        formControlName="label"
+        class="w-full"
+        placeholder="Warehouse Supervisor"
+        [class.ng-invalid]="isInvalid('label')"
+        [class.ng-dirty]="isInvalid('label')" />
+      @if (isInvalid('label')) {
+        <small class="p-error">A role name is required.</small>
+      } @else if (editing()) {
+        <small class="field-hint">
+          Internal key: <span class="mono">{{ editing()!.name }}</span> — it does not change.
+        </small>
+      }
+    </div>
+
+    <div class="field">
+      <label for="description">Description</label>
+      <textarea
+        pTextarea
+        id="description"
+        formControlName="description"
+        rows="2"
+        class="w-full"
+        placeholder="What this role is for, in one line."></textarea>
+    </div>
+
+    <p class="form-section">Permissions</p>
+
+    <app-permission-matrix
+      [groups]="catalogue()"
+      [(selected)]="permissions"
+      [readonly]="locked()" />
+
+    @if (showPermissionError()) {
+      <small class="p-error matrix-error">Select at least one permission.</small>
+    }
+
+    @if (!locked()) {
+      <p-message severity="info" styleClass="w-full form-note">
+        Permissions apply to the whole company. Branches never restrict them.
+      </p-message>
+    }
+
+    <div class="form-actions">
+      <p-button
+        [label]="locked() ? 'Close' : 'Cancel'"
+        severity="secondary"
+        [outlined]="true"
+        size="small"
+        [disabled]="saving()"
+        (onClick)="close()" />
+      @if (!locked()) {
+        <p-button
+          [label]="editing() ? 'Save changes' : 'Create role'"
+          type="submit"
+          size="small"
+          [loading]="saving()" />
+      }
+    </div>
+
+  </form>
+
+</p-dialog>

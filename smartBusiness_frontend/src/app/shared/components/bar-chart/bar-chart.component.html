@@ -1,0 +1,11 @@
+<div class="bars" role="img" [attr.aria-label]="ariaLabel">
+  @for (point of points; track point.label) {
+    <div class="bar-column" [title]="point.label + ': ' + (point.value | number: '1.3-3')">
+      <span class="bar-value">{{ point.value | number: '1.0-0' }}</span>
+      <div class="bar-track">
+        <div class="bar" [class.is-empty]="height(point) === 0" [style.height.%]="height(point)"></div>
+      </div>
+      <span class="bar-label">{{ point.label }}</span>
+    </div>
+  }
+</div>

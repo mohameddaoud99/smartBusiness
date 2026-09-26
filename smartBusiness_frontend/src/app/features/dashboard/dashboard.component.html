@@ -1,0 +1,187 @@
+<app-page-header
+  title="Dashboard"
+  description="Overview of your commercial activity">
+</app-page-header>
+
+<!-- One row of cards, the same for every area -->
+<ng-template #cards let-kpis>
+  <div class="kpi-grid">
+    @for (kpi of kpis; track kpi.label) {
+      <div class="kpi surface-panel" [class.is-danger]="kpi.tone === 'danger'" [class.is-warn]="kpi.tone === 'warn'">
+        <div class="kpi-head">
+          <span class="kpi-label">{{ kpi.label }}</span>
+          <i class="kpi-icon" [class]="kpi.icon"></i>
+        </div>
+        <span class="kpi-value">{{ kpi.value | number: (kpi.format === 'amount' ? '1.3-3' : '1.0-0') }}</span>
+        <span class="kpi-note">{{ kpi.note }}</span>
+      </div>
+    }
+  </div>
+</ng-template>
+
+@if (nothingToShow) {
+  <div class="surface-panel panel-body">
+    <h2 class="panel-title">Nothing to show yet</h2>
+    <p class="panel-text">
+      Your role does not give access to sales, purchase or stock figures. Ask an administrator if you need them.
+    </p>
+  </div>
+}
+
+<!-- ===================================================== Sales -->
+@if (canSales) {
+  <section class="dash-section">
+    <h2 class="section-title">Sales</h2>
+
+    @if (sales(); as figures) {
+      <ng-container *ngTemplateOutlet="cards; context: { $implicit: salesKpis() }" />
+
+      <div class="dash-grid">
+        <div class="surface-panel panel-body">
+          <h3 class="panel-title">Net sales, last 6 months</h3>
+          <app-bar-chart [points]="salesBars()" ariaLabel="Net sales for each of the last six months" />
+        </div>
+
+        <div class="surface-panel table-panel">
+          <h3 class="panel-title table-title">Late invoices to chase</h3>
+          <p-table [value]="figures.overdueInvoices" dataKey="id" styleClass="p-datatable-sm">
+            <ng-template pTemplate="header">
+              <tr>
+                <th>Number</th>
+                <th>Customer</th>
+                <th>Due</th>
+                <th class="amount-col">Balance</th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-invoice>
+              <tr>
+                <td><a class="mono" [routerLink]="['/invoices', invoice.id]">{{ invoice.reference }}</a></td>
+                <td>{{ invoice.customerName }}</td>
+                <td class="text-muted">{{ invoice.dueDate | date: 'dd MMM yyyy' }}</td>
+                <td class="amount">{{ invoice.balance | number: '1.3-3' }}</td>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+              <tr>
+                <td colspan="4" class="empty-state">
+                  <i class="pi pi-check-circle empty-icon"></i>
+                  <p class="empty-title">No late invoice</p>
+                  <p class="empty-text">Every invoice is paid or not yet due.</p>
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </div>
+      </div>
+    } @else if (salesFailed()) {
+      <p class="section-note">The sales figures could not be loaded.</p>
+    } @else {
+      <p class="section-note">Loading…</p>
+    }
+  </section>
+}
+
+<!-- ===================================================== Purchases -->
+@if (canPurchases) {
+  <section class="dash-section">
+    <h2 class="section-title">Purchases</h2>
+
+    @if (purchases(); as figures) {
+      <ng-container *ngTemplateOutlet="cards; context: { $implicit: purchaseKpis() }" />
+
+      <div class="dash-grid">
+        <div class="surface-panel panel-body">
+          <h3 class="panel-title">Net purchases, last 6 months</h3>
+          <app-bar-chart [points]="purchaseBars()" ariaLabel="Net purchases for each of the last six months" />
+        </div>
+
+        <div class="surface-panel table-panel">
+          <h3 class="panel-title table-title">Late invoices to pay</h3>
+          <p-table [value]="figures.overdueInvoices" dataKey="id" styleClass="p-datatable-sm">
+            <ng-template pTemplate="header">
+              <tr>
+                <th>Number</th>
+                <th>Supplier</th>
+                <th>Due</th>
+                <th class="amount-col">Balance</th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-invoice>
+              <tr>
+                <td><a class="mono" [routerLink]="['/purchase-invoices', invoice.id]">{{ invoice.reference }}</a></td>
+                <td>{{ invoice.supplierName }}</td>
+                <td class="text-muted">{{ invoice.dueDate | date: 'dd MMM yyyy' }}</td>
+                <td class="amount">{{ invoice.balance | number: '1.3-3' }}</td>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+              <tr>
+                <td colspan="4" class="empty-state">
+                  <i class="pi pi-check-circle empty-icon"></i>
+                  <p class="empty-title">No late invoice</p>
+                  <p class="empty-text">Every supplier invoice is paid or not yet due.</p>
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </div>
+      </div>
+    } @else if (purchasesFailed()) {
+      <p class="section-note">The purchase figures could not be loaded.</p>
+    } @else {
+      <p class="section-note">Loading…</p>
+    }
+  </section>
+}
+
+<!-- ===================================================== Stock -->
+@if (canStock) {
+  <section class="dash-section">
+    <h2 class="section-title">Stock</h2>
+
+    @if (stock(); as figures) {
+      <ng-container *ngTemplateOutlet="cards; context: { $implicit: stockKpis() }" />
+
+      <div class="surface-panel table-panel">
+        <h3 class="panel-title table-title">Running low</h3>
+        <p-table [value]="figures.lowStock" dataKey="productId" styleClass="p-datatable-sm">
+          <ng-template pTemplate="header">
+            <tr>
+              <th>Product</th>
+              <th class="amount-col">Available</th>
+              <th class="amount-col">Minimum</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-level>
+            <tr>
+              <td>
+                <a routerLink="/stock">{{ level.name }}</a>
+                <span class="text-muted"> · {{ level.reference }}</span>
+              </td>
+              <td class="amount">{{ level.available | number: '1.0-3' }}</td>
+              <td class="amount">{{ level.minStock | number: '1.0-3' }}</td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="emptymessage">
+            <tr>
+              <td colspan="3" class="empty-state">
+                <i class="pi pi-check-circle empty-icon"></i>
+                <p class="empty-title">No product is running low</p>
+                <p class="empty-text">Goods appear here once they fall to the minimum you set on them.</p>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+        @if (figures.lowStockCount > figures.lowStock.length) {
+          <p class="more-note">
+            and {{ figures.lowStockCount - figures.lowStock.length }} more — see the <a routerLink="/stock">stock</a>.
+          </p>
+        }
+      </div>
+    } @else if (stockFailed()) {
+      <p class="section-note">The stock figures could not be loaded.</p>
+    } @else {
+      <p class="section-note">Loading…</p>
+    }
+  </section>
+}

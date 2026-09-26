@@ -1,0 +1,49 @@
+<div class="matrix" [class.matrix--readonly]="readonly()">
+
+  <div class="matrix-toolbar">
+    <span class="matrix-count">
+      <strong>{{ selectedCount() }}</strong> of {{ totalCount() }} permissions selected
+    </span>
+
+    @if (!readonly()) {
+      <span class="matrix-toolbar-spacer"></span>
+      <button type="button" class="matrix-link" (click)="selectAll()">Select all</button>
+      <span class="matrix-sep">·</span>
+      <button type="button" class="matrix-link" (click)="clearAll()">Clear all</button>
+    }
+  </div>
+
+  <div class="matrix-body">
+    @for (group of groups(); track group.module) {
+      <div class="matrix-row">
+
+        <div class="matrix-module">
+          <p-checkbox
+            [binary]="true"
+            [ngModel]="isModuleFull(group)"
+            [indeterminate]="isModulePartial(group)"
+            [disabled]="readonly()"
+            [inputId]="'module-' + group.module"
+            (onChange)="toggleModule(group)" />
+          <label [attr.for]="'module-' + group.module">{{ group.label }}</label>
+        </div>
+
+        <div class="matrix-actions">
+          @for (permission of group.permissions; track permission.name) {
+            <label class="matrix-cell" [class.is-on]="isChecked(permission.name)">
+              <p-checkbox
+                [binary]="true"
+                [ngModel]="isChecked(permission.name)"
+                [disabled]="readonly()"
+                [inputId]="permission.name"
+                (onChange)="toggle(permission.name)" />
+              <span class="matrix-cell-label">{{ permission.label }}</span>
+            </label>
+          }
+        </div>
+
+      </div>
+    }
+  </div>
+
+</div>

@@ -1,0 +1,8 @@
+<router-outlet />
+
+<!--
+  Toasts live here, not in MainLayoutComponent: a message raised while navigating
+  away from the layout — "your session has ended" — would otherwise be destroyed
+  with the layout before it could ever be read.
+-->
+<p-toast position="top-right" [breakpoints]="{ '640px': { width: '90vw' } }" />

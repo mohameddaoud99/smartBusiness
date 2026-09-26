@@ -1,0 +1,123 @@
+<app-page-header
+  title="My profile"
+  description="Your personal details and sign-in password">
+</app-page-header>
+
+<div class="surface-panel profile-panel">
+  <form [formGroup]="profileForm" (ngSubmit)="submitProfile()">
+
+    <p class="form-section">Personal details</p>
+
+    <div class="field-grid">
+      <div class="field">
+        <label for="firstName">First name <span class="required">*</span></label>
+        <input
+          pInputText
+          id="firstName"
+          formControlName="firstName"
+          class="w-full"
+          [class.ng-invalid]="isInvalid(profileForm, 'firstName')"
+          [class.ng-dirty]="isInvalid(profileForm, 'firstName')" />
+        @if (isInvalid(profileForm, 'firstName')) {
+          <small class="p-error">{{ errorFor(profileForm, 'firstName') }}</small>
+        }
+      </div>
+
+      <div class="field">
+        <label for="lastName">Last name <span class="required">*</span></label>
+        <input
+          pInputText
+          id="lastName"
+          formControlName="lastName"
+          class="w-full"
+          [class.ng-invalid]="isInvalid(profileForm, 'lastName')"
+          [class.ng-dirty]="isInvalid(profileForm, 'lastName')" />
+        @if (isInvalid(profileForm, 'lastName')) {
+          <small class="p-error">{{ errorFor(profileForm, 'lastName') }}</small>
+        }
+      </div>
+    </div>
+
+    <div class="field-grid">
+      <div class="field">
+        <label for="phone">Phone</label>
+        <input pInputText id="phone" formControlName="phone" class="w-full" />
+      </div>
+
+      <div class="field">
+        <label for="email">Email</label>
+        <input pInputText id="email" class="w-full" [value]="email" disabled />
+        <small class="field-hint">Your sign-in address — contact an administrator to change it.</small>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <p-button
+        label="Save changes"
+        type="submit"
+        size="small"
+        [loading]="savingProfile()" />
+    </div>
+
+  </form>
+</div>
+
+<div class="surface-panel profile-panel">
+  <form [formGroup]="passwordForm" (ngSubmit)="submitPassword()">
+
+    <p class="form-section">Password</p>
+
+    <div class="field">
+      <label for="currentPassword">Current password <span class="required">*</span></label>
+      <p-password
+        inputId="currentPassword"
+        formControlName="currentPassword"
+        styleClass="w-full"
+        [inputStyleClass]="'w-full'"
+        [toggleMask]="true"
+        [feedback]="false" />
+      @if (isInvalid(passwordForm, 'currentPassword')) {
+        <small class="p-error">{{ errorFor(passwordForm, 'currentPassword') }}</small>
+      }
+    </div>
+
+    <div class="field-grid">
+      <div class="field">
+        <label for="newPassword">New password <span class="required">*</span></label>
+        <p-password
+          inputId="newPassword"
+          formControlName="newPassword"
+          styleClass="w-full"
+          [inputStyleClass]="'w-full'"
+          [toggleMask]="true"
+          [feedback]="false" />
+        @if (isInvalid(passwordForm, 'newPassword')) {
+          <small class="p-error">{{ errorFor(passwordForm, 'newPassword') }}</small>
+        }
+      </div>
+
+      <div class="field">
+        <label for="confirmPassword">Confirm new password <span class="required">*</span></label>
+        <p-password
+          inputId="confirmPassword"
+          formControlName="confirmPassword"
+          styleClass="w-full"
+          [inputStyleClass]="'w-full'"
+          [toggleMask]="true"
+          [feedback]="false" />
+        @if (passwordsMismatch) {
+          <small class="p-error">The two passwords do not match.</small>
+        }
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <p-button
+        label="Change password"
+        type="submit"
+        size="small"
+        [loading]="savingPassword()" />
+    </div>
+
+  </form>
+</div>

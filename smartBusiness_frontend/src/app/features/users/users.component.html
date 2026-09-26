@@ -1,0 +1,227 @@
+<app-page-header
+  title="Users"
+  description="Manage the people who can access SmartBusiness">
+  <p-button
+    *appHasPermission="'USER_CREATE'"
+    label="New user"
+    icon="pi pi-plus"
+    size="small"
+    (onClick)="openCreate()" />
+</app-page-header>
+
+<div class="surface-panel">
+
+  <!-- Toolbar: search left, filters right -->
+  <div class="table-toolbar">
+    <p-iconfield styleClass="toolbar-search">
+      <p-inputicon styleClass="pi pi-search" />
+      <input
+        pInputText
+        type="text"
+        placeholder="Search by name, username or email"
+        [(ngModel)]="searchTerm"
+        (ngModelChange)="onSearchChange()" />
+    </p-iconfield>
+
+    <span class="table-toolbar-spacer"></span>
+
+    <p-select
+      [(ngModel)]="roleFilter"
+      (ngModelChange)="onFilterChange()"
+      [options]="roles()"
+      optionLabel="label"
+      optionValue="id"
+      placeholder="All roles"
+      [showClear]="true"
+      size="small"
+      styleClass="toolbar-filter" />
+
+    <p-select
+      [(ngModel)]="statusFilter"
+      (ngModelChange)="onFilterChange()"
+      [options]="statusOptions"
+      optionLabel="label"
+      optionValue="value"
+      placeholder="All statuses"
+      [showClear]="true"
+      size="small"
+      styleClass="toolbar-filter" />
+
+    @if (hasFilters) {
+      <p-button
+        icon="pi pi-filter-slash"
+        severity="secondary"
+        [text]="true"
+        size="small"
+        pTooltip="Clear filters"
+        tooltipPosition="bottom"
+        (onClick)="clearFilters()" />
+    }
+  </div>
+
+  <p-table
+    [value]="users()"
+    [loading]="loading()"
+    [lazy]="true"
+    (onLazyLoad)="load($event)"
+    [paginator]="true"
+    [rows]="10"
+    [rowsPerPageOptions]="[10, 25, 50]"
+    [totalRecords]="totalRecords()"
+    [sortMode]="'single'"
+    dataKey="id"
+    styleClass="p-datatable-sm"
+    responsiveLayout="scroll"
+    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} users"
+    [showCurrentPageReport]="true">
+
+    <ng-template pTemplate="header">
+      <tr>
+        <th pSortableColumn="lastName" style="min-width: 220px">
+          User <p-sortIcon field="lastName" />
+        </th>
+        <th pSortableColumn="username" style="min-width: 130px">
+          Username <p-sortIcon field="username" />
+        </th>
+        <th pSortableColumn="email" style="min-width: 200px">
+          Email <p-sortIcon field="email" />
+        </th>
+        <th style="min-width: 130px">Phone</th>
+        <th style="min-width: 120px">Branch</th>
+        <th style="min-width: 180px">Roles</th>
+        <th pSortableColumn="status" style="min-width: 100px">
+          Status <p-sortIcon field="status" />
+        </th>
+        <th pSortableColumn="createdAt" style="min-width: 120px">
+          Created <p-sortIcon field="createdAt" />
+        </th>
+        <th style="width: 56px"></th>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="body" let-user>
+      <tr class="user-row" (click)="openDetail(user)">
+        <td>
+          <div class="user-cell">
+            <span class="user-initials">{{ initials(user) }}</span>
+            <span class="user-name">{{ user.fullName }}</span>
+          </div>
+        </td>
+        <td><span class="mono">{{ user.username }}</span></td>
+        <td>{{ user.email }}</td>
+        <td>{{ user.phone || '—' }}</td>
+        <td class="text-muted">{{ user.branch?.name || '—' }}</td>
+        <td>
+          @if (user.roles.length) {
+            <div class="role-chips">
+              @for (role of user.roles; track role.id) {
+                <span class="role-chip">{{ role.label }}</span>
+              }
+            </div>
+          } @else {
+            <span class="text-muted">No role</span>
+          }
+        </td>
+        <td>
+          <p-tag
+            [value]="statusLabel(user.status)"
+            [severity]="statusSeverity(user.status)" />
+        </td>
+        <td class="text-muted">{{ user.createdAt | date: 'dd MMM yyyy' }}</td>
+        <td>
+          <p-button
+            icon="pi pi-ellipsis-v"
+            severity="secondary"
+            [text]="true"
+            size="small"
+            (onClick)="buildRowMenu(user); rowMenu.toggle($event); $event.stopPropagation()" />
+        </td>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td colspan="9" class="empty-state">
+          <i class="pi pi-users empty-icon"></i>
+          @if (hasFilters) {
+            <p class="empty-title">No users match your filters</p>
+            <p class="empty-text">Try changing the search term or clearing the filters.</p>
+            <p-button
+              label="Clear filters"
+              icon="pi pi-filter-slash"
+              size="small"
+              [outlined]="true"
+              (onClick)="clearFilters()" />
+          } @else {
+            <p class="empty-title">No users yet</p>
+            <p class="empty-text">Create your first user to get started.</p>
+            <p-button
+              *appHasPermission="'USER_CREATE'"
+              label="New user"
+              icon="pi pi-plus"
+              size="small"
+              (onClick)="openCreate()" />
+          }
+        </td>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="loadingbody">
+      @for (row of [1,2,3,4,5]; track row) {
+        <tr>
+          @for (col of [1,2,3,4,5,6,7,8,9]; track col) {
+            <td><div class="cell-skeleton"></div></td>
+          }
+        </tr>
+      }
+    </ng-template>
+
+  </p-table>
+</div>
+
+<p-menu #rowMenu [model]="rowMenuItems" [popup]="true" appendTo="body" />
+
+<app-user-form (saved)="refresh()" />
+
+<app-user-detail (edit)="openEdit($event)" />
+
+<!-- Reset password -->
+<p-dialog
+  [(visible)]="resetVisible"
+  [modal]="true"
+  [draggable]="false"
+  header="Reset password"
+  [style]="{ width: '420px' }">
+  @if (resetTarget) {
+    <p class="reset-text">
+      Set a new password for <strong>{{ resetTarget.fullName }}</strong>.
+    </p>
+    <div class="field">
+      <label for="newPassword">New password <span class="required">*</span></label>
+      <input
+        pInputText
+        id="newPassword"
+        type="password"
+        class="w-full"
+        [(ngModel)]="newPassword"
+        placeholder="At least 8 characters" />
+      @if (newPassword && newPassword.length < 8) {
+        <small class="p-error">Password must be at least 8 characters.</small>
+      }
+    </div>
+    <div class="reset-actions">
+      <p-button
+        label="Cancel"
+        severity="secondary"
+        [outlined]="true"
+        size="small"
+        (onClick)="resetVisible.set(false)" />
+      <p-button
+        label="Reset password"
+        size="small"
+        [loading]="resetSaving()"
+        [disabled]="newPassword.length < 8"
+        (onClick)="submitReset()" />
+    </div>
+  }
+</p-dialog>

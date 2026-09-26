@@ -1,0 +1,112 @@
+<p-dialog
+  [(visible)]="visible"
+  [modal]="true"
+  [draggable]="false"
+  [closable]="!saving()"
+  [style]="{ width: '520px' }"
+  [header]="title()"
+  (onHide)="close()">
+
+  <form [formGroup]="form" (ngSubmit)="submit()">
+
+    <div class="field">
+      <label for="name">Name <span class="required">*</span></label>
+      <input
+        pInputText
+        id="name"
+        formControlName="name"
+        class="w-full"
+        placeholder="VAT 19%"
+        [class.ng-invalid]="isInvalid('name')"
+        [class.ng-dirty]="isInvalid('name')" />
+      @if (isInvalid('name')) {
+        <small class="p-error">A name is required.</small>
+      }
+    </div>
+
+    <div class="field">
+      <label for="kind">Type <span class="required">*</span></label>
+      <p-select
+        inputId="kind"
+        formControlName="kind"
+        [options]="kindOptions"
+        optionLabel="label"
+        optionValue="value"
+        styleClass="w-full" />
+      @if (editing()) {
+        <small class="field-hint">A tax's type cannot be changed once it exists.</small>
+      }
+    </div>
+
+    @if (!isFixed) {
+      <div class="field">
+        <label for="rate">Rate <span class="required">*</span></label>
+        <p-inputnumber
+          inputId="rate"
+          formControlName="rate"
+          suffix="%"
+          [min]="0"
+          [max]="100"
+          [minFractionDigits]="0"
+          [maxFractionDigits]="3"
+          styleClass="w-full"
+          [inputStyleClass]="'w-full'" />
+        @if (isInvalid('rate')) {
+          <small class="p-error">A percentage is required.</small>
+        }
+      </div>
+    }
+
+    @if (isFixed) {
+      <div class="field">
+        <label for="amount">Amount <span class="required">*</span></label>
+        <p-inputnumber
+          inputId="amount"
+          formControlName="amount"
+          [min]="0"
+          [minFractionDigits]="3"
+          [maxFractionDigits]="3"
+          styleClass="w-full"
+          [inputStyleClass]="'w-full'" />
+        @if (isInvalid('amount')) {
+          <small class="p-error">An amount is required.</small>
+        }
+        <small class="field-hint">A flat charge added once per document, e.g. stamp duty.</small>
+      </div>
+    }
+
+    @if (isSurcharge) {
+      <div class="field-checkbox">
+        <p-checkbox formControlName="includedInVatBase" [binary]="true" inputId="includedInVatBase" />
+        <label for="includedInVatBase">Added to the amount VAT is calculated on</label>
+      </div>
+    }
+
+    <div class="field-checkbox">
+      <p-checkbox formControlName="activeByDefault" [binary]="true" inputId="activeByDefault" />
+      <label for="activeByDefault">Pre-selected on new documents</label>
+    </div>
+
+    <div class="field-checkbox">
+      <p-checkbox formControlName="active" [binary]="true" inputId="active" />
+      <label for="active">Available for selection</label>
+    </div>
+
+    <div class="form-actions">
+      <p-button
+        label="Cancel"
+        severity="secondary"
+        [outlined]="true"
+        size="small"
+        [disabled]="saving()"
+        (onClick)="close()" />
+      <p-button
+        [label]="editing() ? 'Save changes' : 'Create tax'"
+        type="submit"
+        size="small"
+        [loading]="saving()" />
+    </div>
+
+  </form>
+
+</p-dialog>

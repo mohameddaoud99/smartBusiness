@@ -1,0 +1,148 @@
+<p-dialog
+  [(visible)]="visible"
+  [modal]="true"
+  [draggable]="false"
+  [closable]="!saving()"
+  [style]="{ width: '620px' }"
+  [header]="editingId() ? 'Edit user' : 'New user'"
+  (onHide)="close()">
+
+  <form [formGroup]="form" (ngSubmit)="submit()">
+
+    <p class="form-section">Identity</p>
+
+    <div class="field-grid">
+      <div class="field">
+        <label for="firstName">First name <span class="required">*</span></label>
+        <input pInputText id="firstName" formControlName="firstName" class="w-full"
+               [class.ng-invalid]="isInvalid('firstName')" [class.ng-dirty]="isInvalid('firstName')" />
+        @if (isInvalid('firstName')) {
+          <small class="p-error">{{ errorFor('firstName') }}</small>
+        }
+      </div>
+
+      <div class="field">
+        <label for="lastName">Last name <span class="required">*</span></label>
+        <input pInputText id="lastName" formControlName="lastName" class="w-full"
+               [class.ng-invalid]="isInvalid('lastName')" [class.ng-dirty]="isInvalid('lastName')" />
+        @if (isInvalid('lastName')) {
+          <small class="p-error">{{ errorFor('lastName') }}</small>
+        }
+      </div>
+    </div>
+
+    <p class="form-section">Account</p>
+
+    <div class="field-grid">
+      <div class="field">
+        <label for="username">Username <span class="required">*</span></label>
+        <input pInputText id="username" formControlName="username" class="w-full"
+               [class.ng-invalid]="isInvalid('username')" [class.ng-dirty]="isInvalid('username')" />
+        @if (isInvalid('username')) {
+          <small class="p-error">{{ errorFor('username') }}</small>
+        }
+      </div>
+
+      <div class="field">
+        <label for="email">Email <span class="required">*</span></label>
+        <input pInputText id="email" type="email" formControlName="email" class="w-full"
+               [class.ng-invalid]="isInvalid('email')" [class.ng-dirty]="isInvalid('email')" />
+        @if (isInvalid('email')) {
+          <small class="p-error">{{ errorFor('email') }}</small>
+        }
+      </div>
+
+      <div class="field">
+        <label for="phone">Phone</label>
+        <input pInputText id="phone" formControlName="phone" class="w-full" />
+      </div>
+
+      <div class="field">
+        <label for="branchId">Branch</label>
+        <p-select
+          inputId="branchId"
+          formControlName="branchId"
+          [options]="branches()"
+          optionLabel="name"
+          optionValue="id"
+          placeholder="No branch"
+          [showClear]="true"
+          styleClass="w-full" />
+        <small class="field-hint">Which site this person is based at — informational only.</small>
+      </div>
+
+      @if (!editingId()) {
+        <div class="field">
+          <label for="password">Password <span class="required">*</span></label>
+          <input pInputText id="password" type="password" formControlName="password" class="w-full"
+                 [class.ng-invalid]="isInvalid('password')" [class.ng-dirty]="isInvalid('password')" />
+          @if (isInvalid('password')) {
+            <small class="p-error">{{ errorFor('password') }}</small>
+          } @else {
+            <small class="field-hint">At least 8 characters.</small>
+          }
+        </div>
+      }
+    </div>
+
+    <p class="form-section">Access</p>
+
+    <div class="field">
+      <label for="roleIds">Roles</label>
+      <p-multiselect
+        inputId="roleIds"
+        formControlName="roleIds"
+        [options]="roles()"
+        optionLabel="label"
+        optionValue="id"
+        display="chip"
+        placeholder="Select one or more roles"
+        styleClass="w-full"
+        [showClear]="true"
+        [filter]="roles().length > 8" />
+      @if (editingSelf()) {
+        <small class="field-hint">
+          You cannot change your own roles — ask another administrator.
+        </small>
+      } @else {
+        <small class="field-hint">
+          Permissions add up across roles. Leave empty to give no access yet.
+        </small>
+      }
+    </div>
+
+    <div class="field">
+      <label for="status">Status <span class="required">*</span></label>
+      <p-select
+        inputId="status"
+        formControlName="status"
+        [options]="statusOptions"
+        optionLabel="label"
+        optionValue="value"
+        styleClass="w-full" />
+    </div>
+
+    @if (editingId()) {
+      <p-message severity="info" styleClass="w-full">
+        To change this user's password, use "Reset password" from the row menu.
+      </p-message>
+    }
+
+    <div class="form-actions">
+      <p-button
+        label="Cancel"
+        severity="secondary"
+        [outlined]="true"
+        size="small"
+        [disabled]="saving()"
+        (onClick)="close()" />
+      <p-button
+        [label]="editingId() ? 'Save changes' : 'Create user'"
+        type="submit"
+        size="small"
+        [loading]="saving()" />
+    </div>
+
+  </form>
+
+</p-dialog>

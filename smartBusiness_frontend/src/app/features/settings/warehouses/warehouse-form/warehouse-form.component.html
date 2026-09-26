@@ -1,0 +1,62 @@
+<p-dialog
+  [(visible)]="visible"
+  [modal]="true"
+  [draggable]="false"
+  [closable]="!saving()"
+  [style]="{ width: '480px' }"
+  [header]="title()"
+  (onHide)="close()">
+
+  <form [formGroup]="form" (ngSubmit)="submit()">
+
+    <div class="field">
+      <label for="name">Name <span class="required">*</span></label>
+      <input
+        pInputText
+        id="name"
+        formControlName="name"
+        class="w-full"
+        placeholder="Main warehouse"
+        [class.ng-invalid]="isInvalid('name')"
+        [class.ng-dirty]="isInvalid('name')" />
+      @if (isInvalid('name')) {
+        <small class="p-error">{{ errorFor('name') }}</small>
+      }
+    </div>
+
+    <div class="field">
+      <label for="address">Address</label>
+      <input pInputText id="address" formControlName="address" class="w-full" />
+      @if (isInvalid('address')) {
+        <small class="p-error">{{ errorFor('address') }}</small>
+      }
+    </div>
+
+    <div class="field-checkbox">
+      <p-checkbox formControlName="active" [binary]="true" inputId="active" />
+      <label for="active">Active</label>
+    </div>
+    @if (editing()?.defaultWarehouse) {
+      <small class="field-hint">This is the default warehouse: orders reserve their stock here. It cannot be deactivated.</small>
+    } @else {
+      <small class="field-hint">An inactive warehouse keeps its history but receives no new stock movement.</small>
+    }
+
+    <div class="form-actions">
+      <p-button
+        label="Cancel"
+        severity="secondary"
+        [outlined]="true"
+        size="small"
+        [disabled]="saving()"
+        (onClick)="close()" />
+      <p-button
+        [label]="editing() ? 'Save changes' : 'Create warehouse'"
+        type="submit"
+        size="small"
+        [loading]="saving()" />
+    </div>
+
+  </form>
+
+</p-dialog>

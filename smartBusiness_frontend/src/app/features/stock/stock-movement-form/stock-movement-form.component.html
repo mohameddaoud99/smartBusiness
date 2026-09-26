@@ -1,0 +1,115 @@
+<p-dialog
+  [(visible)]="visible"
+  [modal]="true"
+  [draggable]="false"
+  [closable]="!saving()"
+  [style]="{ width: '520px' }"
+  header="New stock movement"
+  (onHide)="close()">
+
+  <form [formGroup]="form" (ngSubmit)="submit()">
+
+    <div class="field">
+      <label for="type">Movement <span class="required">*</span></label>
+      <p-select
+        inputId="type"
+        formControlName="type"
+        [options]="actionOptions()"
+        optionLabel="label"
+        optionValue="value"
+        styleClass="w-full" />
+    </div>
+
+    <div class="field">
+      <label for="productId">Product <span class="required">*</span></label>
+      <p-select
+        inputId="productId"
+        formControlName="productId"
+        [options]="products()"
+        optionLabel="name"
+        optionValue="id"
+        placeholder="Select a product"
+        [filter]="true"
+        filterBy="name,reference"
+        styleClass="w-full" />
+      @if (isInvalid('productId')) {
+        <small class="p-error">Product is required</small>
+      }
+    </div>
+
+    <div class="field-grid">
+      <div class="field">
+        <label for="warehouseId">{{ isTransfer ? 'From warehouse' : 'Warehouse' }} <span class="required">*</span></label>
+        <p-select
+          inputId="warehouseId"
+          formControlName="warehouseId"
+          [options]="warehouses()"
+          optionLabel="name"
+          optionValue="id"
+          placeholder="Select a warehouse"
+          styleClass="w-full" />
+        @if (isInvalid('warehouseId')) {
+          <small class="p-error">Warehouse is required</small>
+        }
+      </div>
+
+      @if (isTransfer) {
+        <div class="field">
+          <label for="toWarehouseId">To warehouse <span class="required">*</span></label>
+          <p-select
+            inputId="toWarehouseId"
+            formControlName="toWarehouseId"
+            [options]="warehouses()"
+            optionLabel="name"
+            optionValue="id"
+            placeholder="Select a warehouse"
+            styleClass="w-full" />
+          @if (isInvalid('toWarehouseId')) {
+            <small class="p-error">Destination is required</small>
+          }
+        </div>
+      }
+
+      <div class="field">
+        <label for="quantity">{{ isAdjustment ? 'Counted quantity' : 'Quantity' }} <span class="required">*</span></label>
+        <p-inputnumber
+          inputId="quantity"
+          formControlName="quantity"
+          [min]="0"
+          [minFractionDigits]="0"
+          [maxFractionDigits]="3"
+          styleClass="w-full"
+          [inputStyleClass]="'w-full'" />
+        @if (isInvalid('quantity')) {
+          <small class="p-error">{{ isAdjustment ? 'Enter the quantity you counted' : 'Quantity must be greater than zero' }}</small>
+        }
+      </div>
+    </div>
+    @if (isAdjustment) {
+      <small class="field-hint">Enter what you actually counted: the difference with the register is recorded for you.</small>
+    }
+
+    <div class="field">
+      <label for="reason">Reason</label>
+      <input pInputText id="reason" formControlName="reason" class="w-full"
+             placeholder="Supplier delivery, damaged goods, yearly inventory…" />
+    </div>
+
+    <div class="form-actions">
+      <p-button
+        label="Cancel"
+        severity="secondary"
+        [outlined]="true"
+        size="small"
+        [disabled]="saving()"
+        (onClick)="close()" />
+      <p-button
+        label="Record"
+        type="submit"
+        size="small"
+        [loading]="saving()" />
+    </div>
+
+  </form>
+
+</p-dialog>

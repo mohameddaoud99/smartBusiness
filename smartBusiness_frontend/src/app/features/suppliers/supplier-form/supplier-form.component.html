@@ -1,0 +1,179 @@
+<p-dialog
+  [(visible)]="visible"
+  [modal]="true"
+  [draggable]="false"
+  [closable]="!saving()"
+  [style]="{ width: '640px' }"
+  [contentStyle]="{ 'max-height': '72vh', overflow: 'auto' }"
+  [header]="editingId() ? 'Edit supplier' : 'New supplier'"
+  (onHide)="close()">
+
+  <form [formGroup]="form" (ngSubmit)="submit()">
+
+    <div class="type-toggle">
+      @for (option of typeOptions; track option.value) {
+        <label class="type-option" [class.selected]="form.controls['type'].value === option.value">
+          <p-radiobutton
+            formControlName="type"
+            [value]="option.value"
+            [inputId]="'type-' + option.value" />
+          <span>{{ option.label }}</span>
+        </label>
+      }
+    </div>
+
+    <p class="form-section">Identity</p>
+
+    <div class="field-grid">
+      <div class="field">
+        <label for="name">{{ nameLabel }} <span class="required">*</span></label>
+        <input pInputText id="name" formControlName="name" class="w-full"
+               [class.ng-invalid]="isInvalid('name')" [class.ng-dirty]="isInvalid('name')" />
+        @if (isInvalid('name')) {
+          <small class="p-error">{{ errorFor('name') }}</small>
+        }
+      </div>
+
+      <div class="field">
+        <label for="reference">Reference</label>
+        <input pInputText id="reference" formControlName="reference" class="w-full"
+               placeholder="Auto-generated if blank" />
+      </div>
+
+      @if (isCompany) {
+        <div class="field">
+          <label for="contactName">Contact person</label>
+          <input pInputText id="contactName" formControlName="contactName" class="w-full" />
+        </div>
+
+        <div class="field">
+          <label for="taxId">Tax ID</label>
+          <input pInputText id="taxId" formControlName="taxId" class="w-full"
+                 placeholder="1234567X/X/X/000" />
+          <small class="field-hint">Matricule fiscal.</small>
+        </div>
+      } @else {
+        <div class="field">
+          <label for="nationalId">National ID</label>
+          <input pInputText id="nationalId" formControlName="nationalId" class="w-full"
+                 placeholder="CIN" />
+        </div>
+
+        <div class="field">
+          <label for="birthDate">Date of birth</label>
+          <p-datepicker
+            inputId="birthDate"
+            formControlName="birthDate"
+            dateFormat="dd/mm/yy"
+            [maxDate]="maxBirthDate"
+            [showIcon]="true"
+            styleClass="w-full"
+            appendTo="body" />
+        </div>
+      }
+    </div>
+
+    <p class="form-section">Contact</p>
+
+    <div class="field-grid">
+      <div class="field">
+        <label for="email">Email</label>
+        <input pInputText id="email" type="email" formControlName="email" class="w-full"
+               [class.ng-invalid]="isInvalid('email')" [class.ng-dirty]="isInvalid('email')" />
+        @if (isInvalid('email')) {
+          <small class="p-error">{{ errorFor('email') }}</small>
+        }
+      </div>
+
+      <div class="field">
+        <label for="phone">Phone</label>
+        <input pInputText id="phone" formControlName="phone" class="w-full" />
+      </div>
+    </div>
+
+    <p class="form-section">Billing address</p>
+
+    <div formGroupName="billingAddress">
+      <div class="field">
+        <label for="b-street">Street</label>
+        <input pInputText id="b-street" formControlName="street" class="w-full" />
+      </div>
+      <div class="field-grid">
+        <div class="field">
+          <label for="b-postal">Postal code</label>
+          <input pInputText id="b-postal" formControlName="postalCode" class="w-full" />
+        </div>
+        <div class="field">
+          <label for="b-city">City</label>
+          <input pInputText id="b-city" formControlName="city" class="w-full" />
+        </div>
+        <div class="field">
+          <label for="b-region">Region</label>
+          <input pInputText id="b-region" formControlName="region" class="w-full" />
+        </div>
+        <div class="field">
+          <label for="b-country">Country</label>
+          <input pInputText id="b-country" formControlName="country" class="w-full" />
+        </div>
+      </div>
+    </div>
+
+    <div class="field-checkbox">
+      <p-checkbox formControlName="sameShipping" [binary]="true" inputId="sameShipping" />
+      <label for="sameShipping">Shipping address is the same as billing</label>
+    </div>
+
+    @if (!sameShipping) {
+      <p class="form-section">Shipping address</p>
+      <div formGroupName="shippingAddress">
+        <div class="field">
+          <label for="s-street">Street</label>
+          <input pInputText id="s-street" formControlName="street" class="w-full" />
+        </div>
+        <div class="field-grid">
+          <div class="field">
+            <label for="s-postal">Postal code</label>
+            <input pInputText id="s-postal" formControlName="postalCode" class="w-full" />
+          </div>
+          <div class="field">
+            <label for="s-city">City</label>
+            <input pInputText id="s-city" formControlName="city" class="w-full" />
+          </div>
+          <div class="field">
+            <label for="s-region">Region</label>
+            <input pInputText id="s-region" formControlName="region" class="w-full" />
+          </div>
+          <div class="field">
+            <label for="s-country">Country</label>
+            <input pInputText id="s-country" formControlName="country" class="w-full" />
+          </div>
+        </div>
+      </div>
+    }
+
+    <p class="form-section">Notes</p>
+
+    <div class="field">
+      <label for="notes">Private note</label>
+      <textarea pTextarea id="notes" formControlName="notes" rows="3" class="w-full"></textarea>
+      <small class="field-hint">Internal use only — never shown on a document.</small>
+    </div>
+
+    <div class="form-actions">
+      <p-button
+        label="Cancel"
+        severity="secondary"
+        [outlined]="true"
+        size="small"
+        [disabled]="saving()"
+        (onClick)="close()" />
+      <p-button
+        [label]="editingId() ? 'Save changes' : 'Create supplier'"
+        type="submit"
+        size="small"
+        [loading]="saving()" />
+    </div>
+
+  </form>
+
+</p-dialog>

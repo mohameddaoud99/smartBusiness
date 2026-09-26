@@ -1,0 +1,156 @@
+<app-page-header
+  title="Stock"
+  description="What you have, what is promised to customers, and what is left to sell">
+  <p-button
+    label="Movements"
+    icon="pi pi-list"
+    severity="secondary"
+    [outlined]="true"
+    size="small"
+    (onClick)="openMovements()" />
+  <p-button
+    *appHasPermission="['STOCK_ADJUST', 'STOCK_TRANSFER']"
+    label="New movement"
+    icon="pi pi-plus"
+    size="small"
+    (onClick)="openMovement()" />
+</app-page-header>
+
+<div class="surface-panel">
+
+  <div class="table-toolbar">
+    <p-iconfield styleClass="toolbar-search">
+      <p-inputicon styleClass="pi pi-search" />
+      <input
+        pInputText
+        type="text"
+        placeholder="Search by name, reference or barcode"
+        [(ngModel)]="searchTerm"
+        (ngModelChange)="onSearchChange()" />
+    </p-iconfield>
+
+    <span class="table-toolbar-spacer"></span>
+
+    <label class="low-only" [class.is-disabled]="!!warehouseFilter"
+           pTooltip="The minimum is a company-wide figure, so it cannot be filtered per warehouse"
+           [tooltipDisabled]="!warehouseFilter" tooltipPosition="bottom">
+      <p-checkbox
+        [(ngModel)]="lowOnly"
+        [binary]="true"
+        [disabled]="!!warehouseFilter"
+        inputId="lowOnly"
+        (onChange)="onFilterChange()" />
+      <span>Low stock only</span>
+    </label>
+
+    <p-select
+      [(ngModel)]="warehouseFilter"
+      (ngModelChange)="onWarehouseChange()"
+      [options]="warehouses()"
+      optionLabel="name"
+      optionValue="id"
+      placeholder="All warehouses"
+      [showClear]="true"
+      size="small"
+      styleClass="toolbar-filter" />
+
+    @if (hasFilters) {
+      <p-button
+        icon="pi pi-filter-slash"
+        severity="secondary"
+        [text]="true"
+        size="small"
+        pTooltip="Clear filters"
+        tooltipPosition="bottom"
+        (onClick)="clearFilters()" />
+    }
+  </div>
+
+  <p-table
+    [value]="levels()"
+    [loading]="loading()"
+    [lazy]="true"
+    (onLazyLoad)="load($event)"
+    [paginator]="true"
+    [rows]="10"
+    [rowsPerPageOptions]="[10, 25, 50]"
+    [totalRecords]="totalRecords()"
+    [sortMode]="'single'"
+    dataKey="productId"
+    styleClass="p-datatable-sm"
+    responsiveLayout="scroll"
+    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} products"
+    [showCurrentPageReport]="true">
+
+    <ng-template pTemplate="header">
+      <tr>
+        <th pSortableColumn="reference" style="width: 110px">
+          Reference <p-sortIcon field="reference" />
+        </th>
+        <th pSortableColumn="name" style="min-width: 220px">
+          Product <p-sortIcon field="name" />
+        </th>
+        <th class="num" style="width: 110px">In stock</th>
+        <th class="num" style="width: 110px">Reserved</th>
+        <th class="num" style="width: 110px">Available</th>
+        <th class="num" style="width: 100px">Minimum</th>
+        <th style="width: 110px">Status</th>
+        <th style="width: 56px"></th>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="body" let-level>
+      <tr>
+        <td><span class="mono">{{ level.reference }}</span></td>
+        <td class="text-strong">{{ level.name }}</td>
+        <td class="num">{{ level.physical | number: '1.0-3' }}</td>
+        <td class="num text-muted">{{ level.reserved | number: '1.0-3' }}</td>
+        <td class="num available" [class.is-negative]="level.available < 0">
+          {{ level.available | number: '1.0-3' }}
+        </td>
+        <td class="num text-muted">{{ level.minStock != null ? (level.minStock | number: '1.0-3') : '—' }}</td>
+        <td>
+          @if (level.lowStock) {
+            <p-tag value="Low stock" severity="warn" />
+          } @else if (level.available < 0) {
+            <p-tag value="Oversold" severity="danger" />
+          }
+        </td>
+        <td>
+          <p-button
+            icon="pi pi-ellipsis-v"
+            severity="secondary"
+            [text]="true"
+            size="small"
+            (onClick)="buildRowMenu(level); rowMenu.toggle($event)" />
+        </td>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td colspan="8" class="empty-state">
+          <i class="pi pi-chart-bar empty-icon"></i>
+          @if (hasFilters) {
+            <p class="empty-title">No products match your filters</p>
+            <p class="empty-text">Try changing the search term or clearing the filters.</p>
+            <p-button
+              label="Clear filters"
+              icon="pi pi-filter-slash"
+              size="small"
+              [outlined]="true"
+              (onClick)="clearFilters()" />
+          } @else {
+            <p class="empty-title">No stocked products yet</p>
+            <p class="empty-text">Stock is kept for physical products — add one from the Products page. Services have no stock.</p>
+          }
+        </td>
+      </tr>
+    </ng-template>
+
+  </p-table>
+</div>
+
+<p-menu #rowMenu [model]="rowMenuItems" [popup]="true" appendTo="body" />
+
+<app-stock-movement-form (saved)="refresh()" />

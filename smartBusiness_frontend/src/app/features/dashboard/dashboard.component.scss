@@ -1,0 +1,125 @@
+.dash-section {
+  margin-bottom: 1.75rem;
+}
+
+.section-title {
+  margin: 0 0 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--p-surface-500);
+}
+
+.section-note {
+  margin: 0;
+  font-size: 0.8125rem;
+  color: var(--p-surface-500);
+}
+
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 0.875rem;
+  margin-bottom: 0.875rem;
+}
+
+.kpi {
+  display: flex;
+  flex-direction: column;
+  padding: 0.875rem 1rem;
+
+  &.is-danger .kpi-value {
+    color: var(--p-red-600);
+  }
+
+  &.is-warn .kpi-value {
+    color: var(--p-orange-600);
+  }
+}
+
+.kpi-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.kpi-label {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--p-surface-500);
+}
+
+.kpi-icon {
+  font-size: 0.875rem;
+  color: var(--p-surface-400);
+}
+
+.kpi-value {
+  margin-top: 0.5rem;
+  font-size: 1.5rem;
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+  color: var(--p-surface-900);
+  line-height: 1.2;
+}
+
+.kpi-note {
+  margin-top: 0.125rem;
+  font-size: 0.75rem;
+  color: var(--p-surface-400);
+}
+
+/* A chart and a table side by side; stacked once the screen is narrow */
+.dash-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
+  gap: 0.875rem;
+  align-items: start;
+
+  @media (max-width: 1100px) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.panel-body {
+  padding: 1.125rem 1.25rem;
+}
+
+.table-panel {
+  padding-bottom: 0.25rem;
+}
+
+.panel-title {
+  margin: 0 0 0.875rem;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--p-surface-900);
+}
+
+.table-title {
+  margin: 0;
+  padding: 1.125rem 1.25rem 0.75rem;
+}
+
+.panel-text {
+  margin: 0;
+  max-width: 60ch;
+  font-size: 0.8125rem;
+  line-height: 1.6;
+  color: var(--p-surface-500);
+}
+
+.amount-col {
+  text-align: right;
+}
+
+.more-note {
+  margin: 0;
+  padding: 0.5rem 1.25rem 0.875rem;
+  font-size: 0.75rem;
+  color: var(--p-surface-500);
+}

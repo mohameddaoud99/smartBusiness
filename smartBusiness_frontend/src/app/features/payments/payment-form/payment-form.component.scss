@@ -1,0 +1,24 @@
+.balance-line {
+  margin: 0 0 1rem;
+  font-size: 0.8125rem;
+  color: var(--p-surface-500);
+
+  strong {
+    color: var(--p-surface-800);
+  }
+}
+
+.field-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 1rem;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 1.25rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--p-surface-200);
+}

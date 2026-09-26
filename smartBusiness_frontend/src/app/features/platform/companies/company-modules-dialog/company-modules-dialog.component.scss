@@ -1,0 +1,41 @@
+.modules-intro {
+  margin: 0 0 1rem;
+  font-size: 0.75rem;
+  line-height: 1.5;
+  color: var(--p-surface-500);
+}
+
+.modules-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.module-row {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  padding: 0.5rem 0.625rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.8125rem;
+  color: var(--p-surface-600);
+
+  &:hover {
+    background: var(--p-surface-50);
+  }
+
+  &.is-on {
+    color: var(--p-surface-900);
+    font-weight: 500;
+  }
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 1.25rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--p-surface-200);
+}

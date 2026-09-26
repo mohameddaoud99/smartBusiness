@@ -1,0 +1,137 @@
+<app-page-header
+  title="Stock movements"
+  description="Every entry, exit, transfer and reservation — the register behind each level">
+  <p-button
+    label="Back to stock"
+    icon="pi pi-arrow-left"
+    severity="secondary"
+    [outlined]="true"
+    size="small"
+    (onClick)="openStock()" />
+</app-page-header>
+
+<div class="surface-panel">
+
+  <div class="table-toolbar">
+    <p-select
+      [(ngModel)]="productFilter"
+      (ngModelChange)="onFilterChange()"
+      [options]="products()"
+      optionLabel="name"
+      optionValue="id"
+      placeholder="All products"
+      [showClear]="true"
+      [filter]="true"
+      filterBy="name,reference"
+      size="small"
+      styleClass="toolbar-filter wide" />
+
+    <p-select
+      [(ngModel)]="warehouseFilter"
+      (ngModelChange)="onFilterChange()"
+      [options]="warehouses()"
+      optionLabel="name"
+      optionValue="id"
+      placeholder="All warehouses"
+      [showClear]="true"
+      size="small"
+      styleClass="toolbar-filter" />
+
+    <p-select
+      [(ngModel)]="typeFilter"
+      (ngModelChange)="onFilterChange()"
+      [options]="typeOptions"
+      optionLabel="label"
+      optionValue="value"
+      placeholder="All types"
+      [showClear]="true"
+      size="small"
+      styleClass="toolbar-filter" />
+
+    @if (hasFilters) {
+      <p-button
+        icon="pi pi-filter-slash"
+        severity="secondary"
+        [text]="true"
+        size="small"
+        pTooltip="Clear filters"
+        tooltipPosition="bottom"
+        (onClick)="clearFilters()" />
+    }
+  </div>
+
+  <p-table
+    [value]="movements()"
+    [loading]="loading()"
+    [lazy]="true"
+    (onLazyLoad)="load($event)"
+    [paginator]="true"
+    [rows]="10"
+    [rowsPerPageOptions]="[10, 25, 50]"
+    [totalRecords]="totalRecords()"
+    [sortMode]="'single'"
+    dataKey="id"
+    styleClass="p-datatable-sm"
+    responsiveLayout="scroll"
+    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} movements"
+    [showCurrentPageReport]="true">
+
+    <ng-template pTemplate="header">
+      <tr>
+        <th pSortableColumn="occurredAt" style="width: 160px">
+          Date <p-sortIcon field="occurredAt" />
+        </th>
+        <th style="width: 130px">Type</th>
+        <th style="min-width: 220px">Product</th>
+        <th style="min-width: 140px">Warehouse</th>
+        <th class="num" style="width: 110px">Quantity</th>
+        <th style="min-width: 220px">Reason</th>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="body" let-movement>
+      <tr>
+        <td class="text-muted">{{ movement.occurredAt | date: 'dd MMM yyyy HH:mm' }}</td>
+        <td>
+          <p-tag [value]="movementLabel(movement.type)" [severity]="movementSeverity(movement.type)" />
+        </td>
+        <td>
+          <span class="mono">{{ movement.productReference }}</span>
+          <span class="text-strong product-name">{{ movement.productName }}</span>
+        </td>
+        <td class="text-muted">{{ movement.warehouseName }}</td>
+        <td class="num" [class.is-positive]="movement.quantity > 0" [class.is-negative]="movement.quantity < 0">
+          {{ movement.quantity > 0 ? '+' : '' }}{{ movement.quantity | number: '1.0-3' }}
+        </td>
+        <td class="text-muted">
+          {{ movement.reason || '—' }}
+          @if (movement.sourceType === 'SALES_DOCUMENT') {
+            <a class="source-link" [routerLink]="['/sales-orders', movement.sourceId]">order</a>
+          }
+        </td>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td colspan="6" class="empty-state">
+          <i class="pi pi-list empty-icon"></i>
+          @if (hasFilters) {
+            <p class="empty-title">No movements match your filters</p>
+            <p class="empty-text">Try changing the filters.</p>
+            <p-button
+              label="Clear filters"
+              icon="pi pi-filter-slash"
+              size="small"
+              [outlined]="true"
+              (onClick)="clearFilters()" />
+          } @else {
+            <p class="empty-title">No stock movements yet</p>
+            <p class="empty-text">Movements appear here as soon as stock is received, moved or reserved by an order.</p>
+          }
+        </td>
+      </tr>
+    </ng-template>
+
+  </p-table>
+</div>

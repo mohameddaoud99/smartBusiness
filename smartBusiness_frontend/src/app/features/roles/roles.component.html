@@ -1,0 +1,109 @@
+<app-page-header
+  title="Roles"
+  description="Decide what each job function is allowed to do">
+  <p-button
+    *appHasPermission="'ROLE_CREATE'"
+    label="New role"
+    icon="pi pi-plus"
+    size="small"
+    (onClick)="openCreate()" />
+</app-page-header>
+
+<div class="surface-panel">
+  <p-table
+    [value]="roles()"
+    [loading]="loading()"
+    dataKey="id"
+    styleClass="p-datatable-sm"
+    responsiveLayout="scroll">
+
+    <ng-template pTemplate="header">
+      <tr>
+        <th style="min-width: 240px">Role</th>
+        <th style="min-width: 200px">Modules</th>
+        <th style="width: 110px">Permissions</th>
+        <th style="width: 90px">Users</th>
+        <th style="width: 110px">Type</th>
+        <th style="width: 96px"></th>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="body" let-role>
+      <tr>
+        <td>
+          <div class="role-cell">
+            <span class="role-label">{{ role.label }}</span>
+            @if (role.description) {
+              <span class="role-description">{{ role.description }}</span>
+            }
+          </div>
+        </td>
+        <td class="text-muted">{{ moduleSummary(role) }}</td>
+        <td>{{ role.permissions.length }}</td>
+        <td>
+          @if (role.userCount > 0) {
+            <span class="text-strong">{{ role.userCount }}</span>
+          } @else {
+            <span class="text-muted">—</span>
+          }
+        </td>
+        <td>
+          <p-tag
+            [value]="role.system ? 'Standard' : 'Custom'"
+            [severity]="role.system ? 'info' : 'secondary'" />
+        </td>
+        <td>
+          @if (role.system) {
+            <!-- Standard roles are read-only; viewing them still teaches the matrix -->
+            <p-button
+              icon="pi pi-eye"
+              severity="secondary"
+              [text]="true"
+              size="small"
+              pTooltip="View permissions"
+              tooltipPosition="left"
+              (onClick)="openEdit(role)" />
+          } @else {
+            <p-button
+              *appHasPermission="'ROLE_UPDATE'"
+              icon="pi pi-pencil"
+              severity="secondary"
+              [text]="true"
+              size="small"
+              pTooltip="Edit"
+              tooltipPosition="left"
+              (onClick)="openEdit(role)" />
+            <p-button
+              *appHasPermission="'ROLE_DELETE'"
+              icon="pi pi-trash"
+              severity="danger"
+              [text]="true"
+              size="small"
+              pTooltip="Delete"
+              tooltipPosition="left"
+              (onClick)="confirmDelete(role)" />
+          }
+        </td>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td colspan="6" class="empty-state">
+          <i class="pi pi-key empty-icon"></i>
+          <p class="empty-title">No roles yet</p>
+          <p class="empty-text">Create a role to describe what a job function may do.</p>
+          <p-button
+            *appHasPermission="'ROLE_CREATE'"
+            label="New role"
+            icon="pi pi-plus"
+            size="small"
+            (onClick)="openCreate()" />
+        </td>
+      </tr>
+    </ng-template>
+
+  </p-table>
+</div>
+
+<app-role-form (saved)="load()" />

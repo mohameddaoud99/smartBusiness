@@ -1,0 +1,23 @@
+/* Layout comes from login.component.scss; only the wider card differs. */
+
+.auth-card {
+  max-width: 460px;
+}
+
+.auth-note {
+  margin: 1rem 0 0;
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.625rem 0.75rem;
+  border-radius: 6px;
+  background: var(--p-surface-50);
+  border: 1px solid var(--p-surface-200);
+  font-size: 0.75rem;
+  line-height: 1.5;
+  color: var(--p-surface-600);
+
+  i {
+    color: var(--p-primary-color);
+    margin-top: 0.125rem;
+  }
+}

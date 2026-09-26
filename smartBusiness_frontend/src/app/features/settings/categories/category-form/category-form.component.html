@@ -1,0 +1,59 @@
+<p-dialog
+  [(visible)]="visible"
+  [modal]="true"
+  [draggable]="false"
+  [closable]="!saving()"
+  [style]="{ width: '480px' }"
+  [header]="title()"
+  (onHide)="close()">
+
+  <form [formGroup]="form" (ngSubmit)="submit()">
+
+    <div class="field">
+      <label for="name">Name <span class="required">*</span></label>
+      <input
+        pInputText
+        id="name"
+        formControlName="name"
+        class="w-full"
+        placeholder="Electronics"
+        [class.ng-invalid]="isInvalid('name')"
+        [class.ng-dirty]="isInvalid('name')" />
+      @if (isInvalid('name')) {
+        <small class="p-error">{{ errorFor('name') }}</small>
+      }
+    </div>
+
+    <div class="field">
+      <label for="parentId">Parent category</label>
+      <p-select
+        inputId="parentId"
+        formControlName="parentId"
+        [options]="parentOptions()"
+        optionLabel="name"
+        optionValue="id"
+        placeholder="None — top-level family"
+        [showClear]="true"
+        [filter]="true"
+        styleClass="w-full" />
+      <small class="field-hint">Leave empty for a top-level family.</small>
+    </div>
+
+    <div class="form-actions">
+      <p-button
+        label="Cancel"
+        severity="secondary"
+        [outlined]="true"
+        size="small"
+        [disabled]="saving()"
+        (onClick)="close()" />
+      <p-button
+        [label]="editing() ? 'Save changes' : 'Create category'"
+        type="submit"
+        size="small"
+        [loading]="saving()" />
+    </div>
+
+  </form>
+
+</p-dialog>

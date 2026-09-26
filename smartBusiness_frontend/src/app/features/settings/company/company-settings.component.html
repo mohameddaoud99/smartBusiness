@@ -1,0 +1,142 @@
+<app-page-header
+  title="Company settings"
+  description="Your business identity, tax details and branding">
+</app-page-header>
+
+@if (loading()) {
+  <div class="surface-panel settings-panel">
+    <p-skeleton height="1.5rem" styleClass="mb-3" />
+    <p-skeleton height="2.25rem" styleClass="mb-4" />
+    <p-skeleton height="1.5rem" styleClass="mb-3" />
+    <p-skeleton height="2.25rem" width="60%" />
+  </div>
+} @else {
+
+  <div class="surface-panel settings-panel">
+    <form [formGroup]="form" (ngSubmit)="submit()">
+
+      <p class="form-section">Identity</p>
+
+      <div class="field">
+        <label for="name">Company name <span class="required">*</span></label>
+        <input
+          pInputText
+          id="name"
+          formControlName="name"
+          class="w-full"
+          [class.ng-invalid]="isInvalid('name')"
+          [class.ng-dirty]="isInvalid('name')" />
+        @if (isInvalid('name')) {
+          <small class="p-error">{{ errorFor('name') }}</small>
+        }
+      </div>
+
+      <div class="field-grid">
+        <div class="field">
+          <label for="email">Email</label>
+          <input
+            pInputText
+            id="email"
+            type="email"
+            formControlName="email"
+            class="w-full"
+            [class.ng-invalid]="isInvalid('email')"
+            [class.ng-dirty]="isInvalid('email')" />
+          @if (isInvalid('email')) {
+            <small class="p-error">{{ errorFor('email') }}</small>
+          }
+        </div>
+
+        <div class="field">
+          <label for="phone">Phone</label>
+          <input pInputText id="phone" formControlName="phone" class="w-full" />
+        </div>
+      </div>
+
+      <p class="form-section">Address</p>
+
+      <div class="field">
+        <label for="address">Street address</label>
+        <input pInputText id="address" formControlName="address" class="w-full" />
+      </div>
+
+      <div class="field-grid">
+        <div class="field">
+          <label for="postalCode">Postal code</label>
+          <input pInputText id="postalCode" formControlName="postalCode" class="w-full" />
+        </div>
+
+        <div class="field">
+          <label for="city">City</label>
+          <input pInputText id="city" formControlName="city" class="w-full" />
+        </div>
+      </div>
+
+      <p class="form-section">Business</p>
+
+      <div class="field-grid">
+        <div class="field">
+          <label for="taxId">Tax ID</label>
+          <input
+            pInputText
+            id="taxId"
+            formControlName="taxId"
+            class="w-full"
+            placeholder="Matricule fiscale" />
+          <small class="field-hint">Your business tax identifier — shown on invoices.</small>
+        </div>
+
+        <div class="field">
+          <label for="currency">Currency <span class="required">*</span></label>
+          <p-select
+            inputId="currency"
+            formControlName="currency"
+            [options]="currencyOptions"
+            optionLabel="label"
+            optionValue="value"
+            [filter]="true"
+            styleClass="w-full" />
+          <small class="field-hint">Used across sales, purchases and stock valuation.</small>
+        </div>
+      </div>
+
+      @if (canEdit) {
+        <div class="form-actions">
+          <p-button
+            label="Save changes"
+            type="submit"
+            size="small"
+            [loading]="saving()" />
+        </div>
+      }
+
+    </form>
+  </div>
+
+  <div class="surface-panel settings-panel branding-panel">
+    <p class="form-section">Branding</p>
+    <p class="branding-intro">
+      The logo appears in the application header; the stamp is used to mark official documents.
+    </p>
+
+    <div class="branding-grid">
+      <app-image-upload
+        label="Company logo"
+        [imageUri]="company()?.logoDataUri"
+        [saving]="logoSaving()"
+        [disabled]="!canEdit"
+        (fileSelected)="onLogoSelected($event)"
+        (removeRequested)="confirmRemoveLogo()" />
+
+      <app-image-upload
+        label="Company stamp"
+        hint="Used to mark official documents — PNG, JPEG or WEBP, up to 1 MB"
+        [imageUri]="company()?.stampDataUri"
+        [saving]="stampSaving()"
+        [disabled]="!canEdit"
+        (fileSelected)="onStampSelected($event)"
+        (removeRequested)="confirmRemoveStamp()" />
+    </div>
+  </div>
+
+}

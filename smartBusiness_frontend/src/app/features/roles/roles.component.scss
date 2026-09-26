@@ -1,0 +1,15 @@
+.role-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+}
+
+.role-label {
+  font-weight: 500;
+  color: var(--p-surface-900);
+}
+
+.role-description {
+  font-size: 0.75rem;
+  color: var(--p-surface-500);
+}

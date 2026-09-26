@@ -1,0 +1,30 @@
+<app-page-header
+  title="Settings"
+  description="Manage your account and configure how your company works">
+</app-page-header>
+
+<div class="settings-grid">
+  @for (tile of tiles; track tile.label) {
+    @if (tile.route) {
+      <a class="settings-tile" [routerLink]="tile.route">
+        <span class="tile-icon"><i [class]="tile.icon"></i></span>
+        <span class="tile-body">
+          <span class="tile-label">{{ tile.label }}</span>
+          <span class="tile-desc">{{ tile.description }}</span>
+        </span>
+        <i class="pi pi-angle-right tile-arrow"></i>
+      </a>
+    } @else {
+      <div class="settings-tile settings-tile--soon" aria-disabled="true">
+        <span class="tile-icon"><i [class]="tile.icon"></i></span>
+        <span class="tile-body">
+          <span class="tile-label">
+            {{ tile.label }}
+            <span class="soon-badge">Soon</span>
+          </span>
+          <span class="tile-desc">{{ tile.description }}</span>
+        </span>
+      </div>
+    }
+  }
+</div>

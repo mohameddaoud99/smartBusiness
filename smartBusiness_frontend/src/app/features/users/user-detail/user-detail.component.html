@@ -1,0 +1,127 @@
+<p-drawer
+  [(visible)]="visible"
+  position="right"
+  [style]="{ width: '460px' }"
+  [showCloseIcon]="true"
+  (onHide)="close()">
+
+  <ng-template pTemplate="header">
+    <span class="drawer-title">User details</span>
+  </ng-template>
+
+  @if (user(); as u) {
+
+    <!-- Identity summary -->
+    <div class="identity">
+      <span class="identity-avatar">{{ initials(u) }}</span>
+      <div class="identity-text">
+        <span class="identity-name">{{ u.fullName }}</span>
+        <span class="identity-username">&#64;{{ u.username }}</span>
+      </div>
+      <p-tag [value]="statusLabel(u.status)" [severity]="statusSeverity(u.status)" />
+    </div>
+
+    <div class="drawer-actions">
+      <p-button
+        label="Edit"
+        icon="pi pi-pencil"
+        size="small"
+        [outlined]="true"
+        (onClick)="edit.emit(u)" />
+    </div>
+
+    <p-tabs value="0">
+      <p-tablist>
+        <p-tab value="0">Overview</p-tab>
+        <p-tab value="1">History</p-tab>
+      </p-tablist>
+
+      <p-tabpanels>
+
+        <!-- Overview -->
+        <p-tabpanel value="0">
+          <dl class="detail-list">
+            <div class="detail-row">
+              <dt>Email</dt>
+              <dd>{{ u.email }}</dd>
+            </div>
+            <div class="detail-row">
+              <dt>Phone</dt>
+              <dd>{{ u.phone || '—' }}</dd>
+            </div>
+            <div class="detail-row">
+              <dt>Branch</dt>
+              <dd>{{ u.branch?.name || '—' }}</dd>
+            </div>
+            <div class="detail-row">
+              <dt>Roles</dt>
+              <dd>
+                @if (u.roles.length) {
+                  <div class="detail-roles">
+                    @for (role of u.roles; track role.id) {
+                      <span class="role-chip">{{ role.label }}</span>
+                    }
+                  </div>
+                } @else {
+                  <span class="text-muted">No role — this account has no access yet</span>
+                }
+              </dd>
+            </div>
+            <div class="detail-row">
+              <dt>Last login</dt>
+              <dd>{{ u.lastLoginAt ? (u.lastLoginAt | date: 'dd MMM yyyy, HH:mm') : 'Never' }}</dd>
+            </div>
+            <div class="detail-row">
+              <dt>Created</dt>
+              <dd>{{ u.createdAt | date: 'dd MMM yyyy, HH:mm' }}</dd>
+            </div>
+            <div class="detail-row">
+              <dt>Last updated</dt>
+              <dd>{{ u.updatedAt | date: 'dd MMM yyyy, HH:mm' }}</dd>
+            </div>
+          </dl>
+        </p-tabpanel>
+
+        <!-- History -->
+        <p-tabpanel value="1">
+          @if (loadingHistory()) {
+            <div class="history-loading">
+              @for (i of [1, 2, 3]; track i) {
+                <p-skeleton height="2.5rem" styleClass="mb-2" />
+              }
+            </div>
+          } @else if (history().length === 0) {
+            <div class="history-empty">
+              <i class="pi pi-history"></i>
+              <p>No activity recorded yet.</p>
+            </div>
+          } @else {
+            <p-timeline [value]="history()" styleClass="history-timeline">
+              <ng-template pTemplate="marker" let-entry>
+                <span class="history-marker" [style.background]="auditColor(entry.action)">
+                  <i [class]="auditIcon(entry.action)"></i>
+                </span>
+              </ng-template>
+              <ng-template pTemplate="content" let-entry>
+                <div class="history-item">
+                  <span class="history-event">{{ entry.actionLabel }}</span>
+                  @if (entry.detail) {
+                    <span class="history-detail">{{ entry.detail }}</span>
+                  }
+                  <span class="history-date">
+                    {{ entry.occurredAt | date: 'dd MMM yyyy, HH:mm' }}
+                    @if (entry.username) {
+                      · by {{ entry.username }}
+                    }
+                  </span>
+                </div>
+              </ng-template>
+            </p-timeline>
+          }
+        </p-tabpanel>
+
+      </p-tabpanels>
+    </p-tabs>
+  }
+
+</p-drawer>

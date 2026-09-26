@@ -1,0 +1,46 @@
+:host ::ng-deep .toolbar-filter {
+  min-width: 150px;
+
+  .p-select-label { font-size: 0.8125rem; }
+}
+
+:host ::ng-deep .toolbar-filter--wide {
+  min-width: 210px;
+}
+
+:host ::ng-deep .toolbar-date {
+  max-width: 150px;
+
+  .p-inputtext { font-size: 0.8125rem; }
+}
+
+.action-cell {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  white-space: nowrap;
+}
+
+/* Same colour vocabulary as the user history timeline */
+.action-dot {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: #fff;
+
+  i { font-size: 0.625rem; }
+}
+
+.mono {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.75rem;
+  color: var(--p-surface-600);
+}
+
+@media (max-width: 900px) {
+  :host ::ng-deep .toolbar-date { max-width: 120px; }
+  .table-toolbar-spacer { display: none; }
+}

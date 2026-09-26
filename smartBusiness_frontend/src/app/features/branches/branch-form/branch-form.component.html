@@ -1,0 +1,73 @@
+<p-dialog
+  [(visible)]="visible"
+  [modal]="true"
+  [draggable]="false"
+  [closable]="!saving()"
+  [style]="{ width: '520px' }"
+  [header]="title()"
+  (onHide)="close()">
+
+  <form [formGroup]="form" (ngSubmit)="submit()">
+
+    <div class="field-grid">
+      <div class="field">
+        <label for="code">Code <span class="required">*</span></label>
+        <input
+          pInputText
+          id="code"
+          formControlName="code"
+          class="w-full"
+          placeholder="TUNIS"
+          [class.ng-invalid]="isInvalid('code')"
+          [class.ng-dirty]="isInvalid('code')" />
+        @if (isInvalid('code')) {
+          <small class="p-error">{{ errorFor('code') }}</small>
+        } @else {
+          <small class="field-hint">Short identifier, unique in your company.</small>
+        }
+      </div>
+
+      <div class="field">
+        <label for="name">Name <span class="required">*</span></label>
+        <input
+          pInputText
+          id="name"
+          formControlName="name"
+          class="w-full"
+          placeholder="Tunis"
+          [class.ng-invalid]="isInvalid('name')"
+          [class.ng-dirty]="isInvalid('name')" />
+        @if (isInvalid('name')) {
+          <small class="p-error">{{ errorFor('name') }}</small>
+        }
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="address">Address</label>
+      <input pInputText id="address" formControlName="address" class="w-full" />
+    </div>
+
+    <div class="field">
+      <label for="phone">Phone</label>
+      <input pInputText id="phone" formControlName="phone" class="w-full" />
+    </div>
+
+    <div class="form-actions">
+      <p-button
+        label="Cancel"
+        severity="secondary"
+        [outlined]="true"
+        size="small"
+        [disabled]="saving()"
+        (onClick)="close()" />
+      <p-button
+        [label]="editing() ? 'Save changes' : 'Create branch'"
+        type="submit"
+        size="small"
+        [loading]="saving()" />
+    </div>
+
+  </form>
+
+</p-dialog>

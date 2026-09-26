@@ -1,0 +1,87 @@
+<div class="auth-page">
+
+  <!-- Brand panel — hidden on small screens, the form is what matters there -->
+  <aside class="auth-brand">
+    <div class="brand-mark">
+      <i class="pi pi-chart-line"></i>
+      <span>SmartBusiness</span>
+    </div>
+
+    <div class="brand-pitch">
+      <h1>Run your business from one place.</h1>
+      <p>Customers, stock, sales and purchasing — for small and medium companies.</p>
+    </div>
+
+    <ul class="brand-points">
+      <li><i class="pi pi-check"></i> Multi-branch ready</li>
+      <li><i class="pi pi-check"></i> Roles and permissions per company</li>
+      <li><i class="pi pi-check"></i> Full audit trail</li>
+    </ul>
+  </aside>
+
+  <!-- Form panel -->
+  <main class="auth-panel">
+    <div class="auth-card">
+
+      <header class="auth-head">
+        <h2>Sign in</h2>
+        <p>Welcome back. Enter your details to continue.</p>
+      </header>
+
+      @if (errorMessage()) {
+        <p-message severity="error" styleClass="w-full auth-error">
+          {{ errorMessage() }}
+        </p-message>
+      }
+
+      <form [formGroup]="form" (ngSubmit)="submit()">
+
+        <div class="field">
+          <label for="email">Email <span class="required">*</span></label>
+          <input
+            pInputText
+            id="email"
+            type="email"
+            formControlName="email"
+            class="w-full"
+            autocomplete="username"
+            placeholder="you@company.com"
+            [class.ng-invalid]="isInvalid('email')"
+            [class.ng-dirty]="isInvalid('email')" />
+          @if (isInvalid('email')) {
+            <small class="p-error">Enter a valid email address.</small>
+          }
+        </div>
+
+        <div class="field">
+          <label for="password">Password <span class="required">*</span></label>
+          <p-password
+            inputId="password"
+            formControlName="password"
+            [feedback]="false"
+            [toggleMask]="true"
+            styleClass="w-full"
+            inputStyleClass="w-full"
+            autocomplete="current-password" />
+          @if (isInvalid('password')) {
+            <small class="p-error">Your password is required.</small>
+          }
+        </div>
+
+        <p-button
+          label="Sign in"
+          type="submit"
+          styleClass="w-full"
+          [loading]="submitting()" />
+
+      </form>
+
+      <p class="auth-switch">
+        New to SmartBusiness?
+        <a routerLink="/register">Create a company account</a>
+      </p>
+
+    </div>
+  </main>
+
+</div>

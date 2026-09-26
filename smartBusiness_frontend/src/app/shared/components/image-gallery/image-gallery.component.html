@@ -1,0 +1,47 @@
+<div class="gallery">
+  <span class="gallery-label">
+    {{ label }} <span class="gallery-count">{{ images.length }}/{{ max }}</span>
+  </span>
+
+  <div class="gallery-slots">
+    @for (image of images; track $index) {
+      <div class="slot filled">
+        <img [src]="image" [alt]="label + ' ' + ($index + 1)" />
+        @if ($index === 0) {
+          <span class="cover-badge">Cover</span>
+        }
+        <p-button
+          class="remove-button"
+          icon="pi pi-times"
+          severity="danger"
+          size="small"
+          [rounded]="true"
+          [disabled]="disabled || saving"
+          [attr.aria-label]="'Remove photo ' + ($index + 1)"
+          (onClick)="removeRequested.emit($index)" />
+      </div>
+    }
+
+    @for (slot of emptySlots; track slot) {
+      <button
+        type="button"
+        class="slot empty"
+        [disabled]="disabled || saving"
+        (click)="pickFile()">
+        <i class="pi" [class.pi-plus]="!saving" [class.pi-spinner]="saving" [class.pi-spin]="saving"></i>
+      </button>
+    }
+  </div>
+
+  <input
+    #fileInput
+    type="file"
+    accept="image/png,image/jpeg,image/webp"
+    class="hidden-input"
+    (change)="onFileChosen($event)" />
+
+  <small class="gallery-hint">Up to {{ max }} photos — PNG, JPEG or WEBP, 1 MB each. The first is the cover.</small>
+  @if (errorMessage()) {
+    <small class="p-error">{{ errorMessage() }}</small>
+  }
+</div>

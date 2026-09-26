@@ -1,0 +1,351 @@
+/*
+ * The sheet is drawn in millimetres and plain black on white: what matters is that it reads well
+ * on paper and in a PDF. Colours are kept to light greys so it survives a black-and-white printer.
+ */
+:host {
+  display: block;
+}
+
+.sheet {
+  position: relative;
+  box-sizing: border-box;
+  width: 210mm;
+  min-height: 297mm;
+  margin: 0 auto;
+  padding: 14mm 14mm 18mm;
+  background: #fff;
+  color: #111;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 9.5pt;
+  line-height: 1.35;
+  overflow: hidden;
+}
+
+p,
+h1,
+h2,
+h3 {
+  margin: 0;
+}
+
+.mono {
+  font-family: ui-monospace, Menlo, Consolas, monospace;
+  font-size: 9pt;
+}
+
+.pre {
+  white-space: pre-line;
+}
+
+/* ---- Watermark: a draft or a cancelled document must never pass for a valid one ---- */
+.watermark {
+  position: absolute;
+  top: 42%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(-30deg);
+  font-size: 88pt;
+  font-weight: 700;
+  letter-spacing: 6pt;
+  color: rgba(0, 0, 0, 0.07);
+  pointer-events: none;
+  user-select: none;
+  z-index: 0;
+}
+
+/* Everything sits above the watermark — except the footer, which is positioned on its own */
+.sheet > *:not(.watermark):not(.sheet-footer) {
+  position: relative;
+  z-index: 1;
+}
+
+/* ---- Header ---- */
+.sheet-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 10mm;
+  padding-bottom: 4mm;
+  border-bottom: 1.5pt solid #111;
+}
+
+.logo {
+  display: block;
+  max-width: 55mm;
+  max-height: 18mm;
+  margin-bottom: 2mm;
+  object-fit: contain;
+}
+
+.issuer-name {
+  font-size: 12pt;
+  font-weight: 700;
+}
+
+.issuer-line {
+  color: #333;
+}
+
+.title-block {
+  text-align: right;
+}
+
+.doc-title {
+  font-size: 19pt;
+  font-weight: 700;
+  letter-spacing: 0.5pt;
+}
+
+.doc-reference {
+  margin-top: 1mm;
+  font-size: 11pt;
+  font-weight: 700;
+}
+
+.doc-dates {
+  display: grid;
+  grid-template-columns: auto auto;
+  gap: 1mm 4mm;
+  justify-content: end;
+  margin: 3mm 0 0;
+  color: #333;
+
+  dt {
+    text-align: right;
+  }
+
+  dd {
+    margin: 0;
+    font-weight: 600;
+    text-align: right;
+    color: #111;
+  }
+}
+
+/* ---- Parties ---- */
+.parties {
+  display: flex;
+  gap: 6mm;
+  margin: 4.5mm 0;
+}
+
+.party {
+  flex: 1;
+  padding: 3mm 4mm;
+  border: 0.75pt solid #999;
+  border-radius: 2mm;
+}
+
+.party-label {
+  margin-bottom: 1.5mm;
+  font-size: 8pt;
+  font-weight: 700;
+  letter-spacing: 0.6pt;
+  text-transform: uppercase;
+  color: #555;
+}
+
+.party-name {
+  font-size: 11pt;
+  font-weight: 700;
+}
+
+.party-line {
+  color: #333;
+}
+
+/* ---- Lines ---- */
+.lines {
+  width: 100%;
+  border-collapse: collapse;
+
+  th {
+    padding: 2mm 2mm;
+    background: #ececec;
+    border-top: 0.75pt solid #111;
+    border-bottom: 0.75pt solid #111;
+    font-size: 8.5pt;
+    font-weight: 700;
+    text-align: left;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  td {
+    padding: 1.8mm 2mm;
+    border-bottom: 0.5pt solid #ccc;
+    vertical-align: top;
+  }
+
+  tr {
+    break-inside: avoid;
+  }
+
+  .c-index { width: 9mm; text-align: center; }
+  .c-ref { width: 24mm; color: #333; }
+  .c-designation { width: auto; }
+}
+
+.c-num {
+  text-align: right;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---- Totals ---- */
+.totals-area {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 8mm;
+  margin-top: 4mm;
+  break-inside: avoid;
+}
+
+.recap {
+  flex: 1;
+}
+
+.vat-recap {
+  border-collapse: collapse;
+  font-size: 8.5pt;
+
+  th,
+  td {
+    padding: 1.2mm 3mm;
+    border: 0.5pt solid #999;
+  }
+
+  th {
+    background: #f3f3f3;
+    font-weight: 700;
+    text-align: left;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  th.c-num {
+    text-align: right;
+  }
+}
+
+.totals {
+  width: 78mm;
+  border-collapse: collapse;
+
+  td {
+    padding: 1.4mm 2mm;
+    border-bottom: 0.5pt solid #ccc;
+  }
+
+  tr.net td {
+    padding-top: 2.4mm;
+    border-top: 1.25pt solid #111;
+    border-bottom: 0;
+    font-size: 11pt;
+    font-weight: 700;
+  }
+}
+
+.in-words {
+  margin-top: 3mm;
+  padding: 2.5mm 3mm;
+  border: 0.75pt solid #999;
+  border-radius: 2mm;
+  break-inside: avoid;
+
+  strong {
+    text-transform: none;
+  }
+}
+
+/* ---- Closing ---- */
+.closing {
+  display: flex;
+  justify-content: space-between;
+  gap: 8mm;
+  margin-top: 4mm;
+  break-inside: avoid;
+
+  h3 {
+    margin: 3mm 0 1mm;
+    font-size: 8.5pt;
+    font-weight: 700;
+    letter-spacing: 0.4pt;
+    text-transform: uppercase;
+    color: #555;
+
+    &:first-child {
+      margin-top: 0;
+    }
+  }
+}
+
+.closing-text {
+  flex: 1;
+  color: #222;
+}
+
+.signature {
+  width: 62mm;
+  min-height: 30mm;
+  text-align: center;
+}
+
+.signature-label {
+  font-size: 8.5pt;
+  font-weight: 700;
+  color: #555;
+}
+
+.stamp {
+  display: block;
+  max-width: 50mm;
+  max-height: 26mm;
+  margin: 2mm auto 0;
+  object-fit: contain;
+}
+
+/* ---- Footer ---- */
+.sheet-footer {
+  position: absolute;
+  left: 14mm;
+  right: 14mm;
+  bottom: 8mm;
+  padding-top: 2mm;
+  border-top: 0.5pt solid #999;
+  font-size: 7.5pt;
+  text-align: center;
+  color: #555;
+}
+
+/*
+ * The sheet as it is photographed for a PDF: no fixed width and no padding of its own, because
+ * the PDF adds its page margins — the same reasoning as the print rules below.
+ */
+.sheet.pdf-mode {
+  width: auto;
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  overflow: visible;
+
+  .sheet-footer {
+    position: static;
+    margin-top: 8mm;
+  }
+}
+
+/* On the sheet itself, do not let the on-screen page shadow leak into the print */
+@media print {
+  .sheet {
+    width: auto;
+    min-height: 0;
+    margin: 0;
+    padding: 0;
+    overflow: visible;
+  }
+
+  .sheet-footer {
+    position: static;
+    margin-top: 8mm;
+  }
+}

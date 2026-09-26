@@ -1,0 +1,22 @@
+<div class="layout" [class.layout--rail]="!layout.isMobile() && layout.collapsed()">
+
+  <div class="layout-sidebar" [class.is-open]="layout.mobileOpen()">
+    <app-sidebar />
+  </div>
+
+  <!-- Backdrop only exists in overlay mode -->
+  @if (layout.isMobile() && layout.mobileOpen()) {
+    <div class="layout-backdrop" (click)="layout.closeMobile()"></div>
+  }
+
+  <div class="layout-main">
+    <app-header />
+    <main class="layout-content">
+      <router-outlet />
+    </main>
+  </div>
+
+</div>
+
+<!-- p-toast lives in AppComponent so messages survive a redirect out of the layout -->
+<p-confirmDialog [style]="{ width: '420px' }" />

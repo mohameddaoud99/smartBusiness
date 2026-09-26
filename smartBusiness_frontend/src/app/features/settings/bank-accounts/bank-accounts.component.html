@@ -1,0 +1,84 @@
+<app-page-header
+  title="Bank accounts"
+  description="The accounts shown on your invoices and used to record incoming payments">
+  <p-button
+    *appHasPermission="'COMPANY_UPDATE'"
+    label="Add account"
+    icon="pi pi-plus"
+    size="small"
+    (onClick)="openCreate()" />
+</app-page-header>
+
+<div class="surface-panel">
+  <p-table
+    [value]="accounts()"
+    [loading]="loading()"
+    dataKey="id"
+    styleClass="p-datatable-sm"
+    responsiveLayout="scroll">
+
+    <ng-template pTemplate="header">
+      <tr>
+        <th style="min-width: 180px">Label</th>
+        <th style="min-width: 160px">Bank</th>
+        <th style="min-width: 220px">RIB / IBAN</th>
+        <th style="width: 110px">Currency</th>
+        <th style="width: 140px">On documents</th>
+        <th style="width: 96px"></th>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="body" let-account>
+      <tr>
+        <td class="text-strong">{{ account.label }}</td>
+        <td class="text-muted">{{ account.bankName || '—' }}</td>
+        <td><span class="mono">{{ account.rib }}</span></td>
+        <td>{{ account.currency }}</td>
+        <td>
+          <p-tag
+            [value]="account.showOnDocuments ? 'Shown' : 'Hidden'"
+            [severity]="account.showOnDocuments ? 'success' : 'secondary'" />
+        </td>
+        <td>
+          <p-button
+            *appHasPermission="'COMPANY_UPDATE'"
+            icon="pi pi-pencil"
+            severity="secondary"
+            [text]="true"
+            size="small"
+            pTooltip="Edit"
+            tooltipPosition="left"
+            (onClick)="openEdit(account)" />
+          <p-button
+            *appHasPermission="'COMPANY_UPDATE'"
+            icon="pi pi-trash"
+            severity="danger"
+            [text]="true"
+            size="small"
+            pTooltip="Remove"
+            tooltipPosition="left"
+            (onClick)="confirmDelete(account)" />
+        </td>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td colspan="6" class="empty-state">
+          <i class="pi pi-wallet empty-icon"></i>
+          <p class="empty-title">No bank accounts yet</p>
+          <p class="empty-text">Add the account your customers should pay into.</p>
+          <p-button
+            *appHasPermission="'COMPANY_UPDATE'"
+            label="Add account"
+            icon="pi pi-plus"
+            size="small"
+            (onClick)="openCreate()" />
+        </td>
+      </tr>
+    </ng-template>
+
+  </p-table>
+</div>
+
+<app-bank-account-form (saved)="load()" />

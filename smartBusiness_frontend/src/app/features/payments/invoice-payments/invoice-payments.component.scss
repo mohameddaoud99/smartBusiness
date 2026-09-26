@@ -1,0 +1,65 @@
+.payments-panel {
+  margin-top: 1rem;
+}
+
+.panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.panel-title {
+  margin: 0;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--p-surface-500);
+}
+
+.balance-summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  margin-bottom: 1rem;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  background: var(--p-surface-50);
+}
+
+.balance-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+
+  .amount {
+    font-size: 1rem;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+.balance-label {
+  font-size: 0.75rem;
+  color: var(--p-surface-500);
+}
+
+.balance-due .amount {
+  color: var(--p-red-600);
+}
+
+.amount-col {
+  text-align: right;
+}
+
+.is-cancelled td {
+  color: var(--p-surface-400);
+  text-decoration: line-through;
+}
+
+.is-cancelled td:nth-child(5),
+.is-cancelled td:nth-child(6) {
+  text-decoration: none;
+}

@@ -1,0 +1,56 @@
+@if (failed()) {
+  <div class="print-message">
+    <i class="pi pi-exclamation-circle"></i>
+    <p>This document could not be loaded.</p>
+    <p-button label="Close" severity="secondary" [outlined]="true" size="small" (onClick)="close()" />
+  </div>
+} @else if (document() && company()) {
+
+  <!-- On screen only: none of this reaches the paper -->
+  <div class="print-toolbar">
+    <div class="print-toolbar-title">
+      <i class="pi pi-print"></i>
+      <span>Print preview</span>
+    </div>
+
+    <label class="print-option">
+      <p-checkbox
+        [ngModel]="options().showPrices"
+        (ngModelChange)="setOption('showPrices', $event)"
+        [binary]="true"
+        inputId="showPrices" />
+      <span>Show prices</span>
+    </label>
+
+    <label class="print-option">
+      <p-checkbox
+        [ngModel]="options().showReference"
+        (ngModelChange)="setOption('showReference', $event)"
+        [binary]="true"
+        inputId="showReference" />
+      <span>Show reference column</span>
+    </label>
+
+    <span class="print-toolbar-spacer"></span>
+
+    <p-button label="Close" severity="secondary" [outlined]="true" size="small" (onClick)="close()" />
+    <p-button
+      label="Download PDF"
+      icon="pi pi-download"
+      severity="secondary"
+      size="small"
+      [loading]="downloading()"
+      (onClick)="download()" />
+    <p-button label="Print" icon="pi pi-print" size="small" [disabled]="downloading()" (onClick)="print()" />
+  </div>
+
+  <div class="print-stage">
+    <app-printable-document [document]="document()!" [company]="company()!" [options]="options()" />
+  </div>
+
+} @else {
+  <div class="print-message">
+    <i class="pi pi-spin pi-spinner"></i>
+    <p>Preparing the document…</p>
+  </div>
+}

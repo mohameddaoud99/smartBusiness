@@ -1,0 +1,180 @@
+/* PrimeNG theme preset lives in src/app/theme.ts */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family:
+    "Inter",
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    Arial,
+    sans-serif;
+  font-size: 14px;
+  color: var(--p-surface-800);
+  background: var(--p-surface-100);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* =========================================================
+   ERP density overrides
+   PrimeNG defaults are sized for consumer apps. ERP screens
+   need more rows on screen, so tables and buttons are tighter.
+   ========================================================= */
+
+.p-datatable {
+  font-size: 0.8125rem;
+
+  .p-datatable-thead > tr > th {
+    padding: 0.5rem 0.75rem;
+    background: var(--p-surface-50);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--p-surface-500);
+    white-space: nowrap;
+  }
+
+  .p-datatable-tbody > tr > td {
+    padding: 0.5rem 0.75rem;
+  }
+
+  .p-datatable-tbody > tr {
+    transition: background-color 0.1s ease;
+  }
+}
+
+/* The surface every ERP page sits on */
+.surface-panel {
+  background: var(--p-surface-0);
+  border: 1px solid var(--p-surface-200);
+  border-radius: 8px;
+  //overflow: hidden;
+}
+
+/* Toolbar strip above a table: search on the left, filters on the right */
+.table-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  padding: 0.75rem;
+  border-bottom: 1px solid var(--p-surface-200);
+  flex-wrap: wrap;
+}
+
+.table-toolbar-spacer {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Shared empty state for tables */
+.empty-state {
+  text-align: center;
+  padding: 3rem 1rem !important;
+
+  .empty-icon {
+    font-size: 1.75rem;
+    color: var(--p-surface-300);
+  }
+
+  .empty-title {
+    margin: 0.75rem 0 0.25rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--p-surface-700);
+  }
+
+  .empty-text {
+    margin: 0 0 1rem;
+    font-size: 0.8125rem;
+    color: var(--p-surface-500);
+  }
+}
+
+/* =========================================================
+   Form conventions — see docs/UI-UX.md
+   ========================================================= */
+
+.field {
+  margin-bottom: 1rem;
+
+  label {
+    display: block;
+    margin-bottom: 0.3125rem;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: var(--p-surface-700);
+  }
+
+  .required {
+    color: var(--p-red-500);
+  }
+
+  .p-error {
+    display: block;
+    margin-top: 0.25rem;
+    font-size: 0.75rem;
+    color: var(--p-red-600);
+  }
+}
+
+.field-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0 1rem;
+}
+
+@media (max-width: 640px) {
+  .field-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.w-full {
+  width: 100%;
+}
+
+/* =========================================================
+   Status colors — one meaning across the whole ERP
+   success=active  warning=pending  danger=cancelled
+   info=neutral    secondary=inactive
+   ========================================================= */
+
+.text-muted {
+  color: var(--p-surface-500);
+}
+.text-strong {
+  color: var(--p-surface-900);
+  font-weight: 600;
+}
+
+/* Destructive entry in a row action menu */
+.menu-danger .p-menu-item-link {
+  color: var(--p-red-600);
+
+  .p-menu-item-icon {
+    color: var(--p-red-600);
+  }
+
+  &:hover {
+    background: var(--p-red-50);
+  }
+}
+
+/* Printed documents: A4 with a margin the printer can always reach. Kept here because a
+   component's styles are scoped and the browser reads @page from the page as a whole. */
+@page {
+  size: A4;
+  margin: 12mm;
+}

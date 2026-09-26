@@ -1,0 +1,153 @@
+<app-page-header
+  title="Customers"
+  description="The people and businesses you sell to">
+  <p-button
+    *appHasPermission="'CUSTOMER_CREATE'"
+    label="New customer"
+    icon="pi pi-plus"
+    size="small"
+    (onClick)="openCreate()" />
+</app-page-header>
+
+<div class="surface-panel">
+
+  <div class="table-toolbar">
+    <p-iconfield styleClass="toolbar-search">
+      <p-inputicon styleClass="pi pi-search" />
+      <input
+        pInputText
+        type="text"
+        placeholder="Search by name, reference or email"
+        [(ngModel)]="searchTerm"
+        (ngModelChange)="onSearchChange()" />
+    </p-iconfield>
+
+    <span class="table-toolbar-spacer"></span>
+
+    <p-select
+      [(ngModel)]="typeFilter"
+      (ngModelChange)="onFilterChange()"
+      [options]="typeOptions"
+      optionLabel="label"
+      optionValue="value"
+      placeholder="All types"
+      [showClear]="true"
+      size="small"
+      styleClass="toolbar-filter" />
+
+    @if (hasFilters) {
+      <p-button
+        icon="pi pi-filter-slash"
+        severity="secondary"
+        [text]="true"
+        size="small"
+        pTooltip="Clear filters"
+        tooltipPosition="bottom"
+        (onClick)="clearFilters()" />
+    }
+  </div>
+
+  <p-table
+    [value]="customers()"
+    [loading]="loading()"
+    [lazy]="true"
+    (onLazyLoad)="load($event)"
+    [paginator]="true"
+    [rows]="10"
+    [rowsPerPageOptions]="[10, 25, 50]"
+    [totalRecords]="totalRecords()"
+    [sortMode]="'single'"
+    dataKey="id"
+    styleClass="p-datatable-sm"
+    responsiveLayout="scroll"
+    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} customers"
+    [showCurrentPageReport]="true">
+
+    <ng-template pTemplate="header">
+      <tr>
+        <th pSortableColumn="reference" style="width: 110px">
+          Reference <p-sortIcon field="reference" />
+        </th>
+        <th pSortableColumn="name" style="min-width: 220px">
+          Name <p-sortIcon field="name" />
+        </th>
+        <th style="width: 110px">Type</th>
+        <th style="min-width: 200px">Email</th>
+        <th style="min-width: 140px">Phone</th>
+        <th style="min-width: 120px">City</th>
+        <th pSortableColumn="createdAt" style="min-width: 120px">
+          Added <p-sortIcon field="createdAt" />
+        </th>
+        <th style="width: 56px"></th>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="body" let-customer>
+      <tr class="customer-row" (click)="openEdit(customer)">
+        <td><span class="mono">{{ customer.reference }}</span></td>
+        <td>
+          <div class="customer-cell">
+            <span class="customer-initials" [class.is-individual]="customer.type === 'INDIVIDUAL'">
+              {{ initials(customer) }}
+            </span>
+            <span class="customer-name">
+              {{ customer.name }}
+              @if (customer.contactName) {
+                <span class="customer-contact">{{ customer.contactName }}</span>
+              }
+            </span>
+          </div>
+        </td>
+        <td>
+          <p-tag
+            [value]="typeLabel(customer.type)"
+            [severity]="customer.type === 'COMPANY' ? 'info' : 'secondary'" />
+        </td>
+        <td>{{ customer.email || '—' }}</td>
+        <td>{{ customer.phone || '—' }}</td>
+        <td class="text-muted">{{ customer.billingAddress?.city || '—' }}</td>
+        <td class="text-muted">{{ customer.createdAt | date: 'dd MMM yyyy' }}</td>
+        <td>
+          <p-button
+            icon="pi pi-ellipsis-v"
+            severity="secondary"
+            [text]="true"
+            size="small"
+            (onClick)="buildRowMenu(customer); rowMenu.toggle($event); $event.stopPropagation()" />
+        </td>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td colspan="8" class="empty-state">
+          <i class="pi pi-users empty-icon"></i>
+          @if (hasFilters) {
+            <p class="empty-title">No customers match your filters</p>
+            <p class="empty-text">Try changing the search term or clearing the filters.</p>
+            <p-button
+              label="Clear filters"
+              icon="pi pi-filter-slash"
+              size="small"
+              [outlined]="true"
+              (onClick)="clearFilters()" />
+          } @else {
+            <p class="empty-title">No customers yet</p>
+            <p class="empty-text">Add your first customer to get started.</p>
+            <p-button
+              *appHasPermission="'CUSTOMER_CREATE'"
+              label="New customer"
+              icon="pi pi-plus"
+              size="small"
+              (onClick)="openCreate()" />
+          }
+        </td>
+      </tr>
+    </ng-template>
+
+  </p-table>
+</div>
+
+<p-menu #rowMenu [model]="rowMenuItems" [popup]="true" appendTo="body" />
+
+<app-customer-form (saved)="refresh()" />

@@ -1,0 +1,44 @@
+<div class="image-slot">
+  <span class="image-label">{{ label }}</span>
+
+  <div class="image-preview" [class.is-empty]="!imageUri">
+    @if (imageUri) {
+      <img [src]="imageUri" [alt]="label" />
+    } @else {
+      <i class="pi pi-image"></i>
+    }
+  </div>
+
+  <input
+    #fileInput
+    type="file"
+    accept="image/png,image/jpeg,image/webp"
+    class="hidden-input"
+    (change)="onFileChosen($event)" />
+
+  <div class="image-actions">
+    <p-button
+      [label]="imageUri ? 'Replace' : 'Upload'"
+      icon="pi pi-upload"
+      size="small"
+      [outlined]="true"
+      [loading]="saving"
+      [disabled]="disabled"
+      (onClick)="pickFile()" />
+    @if (imageUri) {
+      <p-button
+        label="Remove"
+        icon="pi pi-trash"
+        severity="danger"
+        size="small"
+        [text]="true"
+        [disabled]="disabled || saving"
+        (onClick)="removeRequested.emit()" />
+    }
+  </div>
+
+  <small class="image-hint">{{ hint }}</small>
+  @if (errorMessage()) {
+    <small class="p-error">{{ errorMessage() }}</small>
+  }
+</div>

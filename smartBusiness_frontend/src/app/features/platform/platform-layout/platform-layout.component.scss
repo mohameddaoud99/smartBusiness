@@ -1,0 +1,48 @@
+.platform-shell {
+  min-height: 100vh;
+  background: #0f172a;
+}
+
+.platform-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 56px;
+  padding: 0 1.5rem;
+  background: #1e293b;
+  border-bottom: 1px solid #334155;
+}
+
+.platform-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #e2e8f0;
+
+  i {
+    color: #818cf8;
+  }
+}
+
+.platform-topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+}
+
+.platform-admin-email {
+  font-size: 0.8125rem;
+  color: #94a3b8;
+}
+
+:host ::ng-deep .platform-topbar-right .p-button {
+  color: #cbd5e1;
+
+  &:hover { color: #f1f5f9; }
+}
+
+.platform-content {
+  padding: 1.5rem;
+}

@@ -1,0 +1,14 @@
+.mono {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.75rem;
+  color: var(--p-surface-600);
+}
+
+.preview {
+  display: inline-block;
+  padding: 0.15rem 0.5rem;
+  border-radius: 5px;
+  background: var(--p-surface-100);
+  color: var(--p-surface-700);
+  letter-spacing: 0.02em;
+}
