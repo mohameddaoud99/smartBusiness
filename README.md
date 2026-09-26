@@ -14,10 +14,10 @@ isolation).
 
 | | |
 |---|---|
-| ![Dashboard](docs/screenshots/dashboard.png) | ![Invoice](docs/screenshots/invoice.png) |
-| ![Stock](docs/screenshots/stock.png) | ![Roles & permissions](docs/screenshots/users-roles.png) |
+| ![Dashboard](docs/screenshots/dashboard.jpg) | ![Invoice](docs/screenshots/invoice.jpg) |
+| ![Stock](docs/screenshots/stock.jpg) | ![Roles & permissions](docs/screenshots/users-roles.jpg) |
 
-*(see [docs/screenshots/](docs/screenshots/) for the full list and how to add them)*
+*(see [docs/screenshots/](docs/screenshots/) for more)*
 
 ---
 
