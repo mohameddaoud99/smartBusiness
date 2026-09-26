@@ -1,0 +1,30 @@
+# Ce fichier couvre la racine du dépôt (identifiants, exports de base, fichiers d'OS/IDE partagés
+# entre le backend et le frontend). Chaque sous-projet a en plus son propre .gitignore.
+
+# Secrets et configuration locale — ne jamais committer une vraie valeur de JWT_SECRET,
+# de mot de passe de base ou d'identifiant PLATFORM_ADMIN_*
+.env
+.env.*
+*.local.properties
+application-local.properties
+
+# Exports / sauvegardes de base de données
+*.sql.gz
+*.dump
+*.backup
+
+# Certificats et clés
+*.pem
+*.key
+*.p12
+*.jks
+
+# Outils internes — pas destinés à un dépôt ouvert à d'autres
+/tools/seed_demo.py
+/tools/__pycache__/
+
+# OS / éditeurs
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

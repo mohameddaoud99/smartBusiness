@@ -1,0 +1,83 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] ----------------------< com.sales:smartCommerce >-----------------------
+[INFO] Building smartCommerce 0.0.1-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] >>> spring-boot:4.0.7:run (default-cli) > test-compile @ smartCommerce >>>
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ smartCommerce ---
+[INFO] Copying 1 resource from src\main\resources to target\classes
+[INFO] Copying 2 resources from src\main\resources to target\classes
+[INFO] 
+[INFO] --- compiler:3.14.1:compile (default-compile) @ smartCommerce ---
+[INFO] Recompiling the module because of changed source code.
+[INFO] Compiling 24 source files with javac [debug parameters release 21] to target\classes
+[INFO] /D:/JAVA/spring boot/smartCommerce/smartCommerce_backend/src/main/java/com/sales/smartCommerce/exception/GlobalExceptionHandler.java: D:\JAVA\spring boot\smartCommerce\smartCommerce_backend\src\main\java\com\sales\smartCommerce\exception\GlobalExceptionHandler.java uses or overrides a deprecated API.
+[INFO] /D:/JAVA/spring boot/smartCommerce/smartCommerce_backend/src/main/java/com/sales/smartCommerce/exception/GlobalExceptionHandler.java: Recompile with -Xlint:deprecation for details.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ smartCommerce ---
+[INFO] skip non existing resourceDirectory D:\JAVA\spring boot\smartCommerce\smartCommerce_backend\src\test\resources
+[INFO] 
+[INFO] --- compiler:3.14.1:testCompile (default-testCompile) @ smartCommerce ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 1 source file with javac [debug parameters release 21] to target\test-classes
+[INFO] 
+[INFO] <<< spring-boot:4.0.7:run (default-cli) < test-compile @ smartCommerce <<<
+[INFO] 
+[INFO] 
+[INFO] --- spring-boot:4.0.7:run (default-cli) @ smartCommerce ---
+[INFO] Attaching agents: []
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v4.0.7)
+
+2026-08-11T00:15:18.375+01:00  INFO 13704 --- [smartCommerce] [           main] c.s.s.SmartCommerceApplication           : Starting SmartCommerceApplication using Java 21.0.12 with PID 13704 (D:\JAVA\spring boot\smartCommerce\smartCommerce_backend\target\classes started by moham in D:\JAVA\spring boot\smartCommerce\smartCommerce_backend)
+2026-08-11T00:15:18.379+01:00  INFO 13704 --- [smartCommerce] [           main] c.s.s.SmartCommerceApplication           : No active profile set, falling back to 1 default profile: "default"
+2026-08-11T00:15:19.188+01:00  INFO 13704 --- [smartCommerce] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-08-11T00:15:19.266+01:00  INFO 13704 --- [smartCommerce] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 66 ms. Found 2 JPA repository interfaces.
+2026-08-11T00:15:20.059+01:00  INFO 13704 --- [smartCommerce] [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 8080 (http)
+2026-08-11T00:15:20.079+01:00  INFO 13704 --- [smartCommerce] [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-08-11T00:15:20.080+01:00  INFO 13704 --- [smartCommerce] [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.22]
+2026-08-11T00:15:20.171+01:00  INFO 13704 --- [smartCommerce] [           main] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 1731 ms
+2026-08-11T00:15:20.689+01:00  INFO 13704 --- [smartCommerce] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-08-11T00:15:20.887+01:00  INFO 13704 --- [smartCommerce] [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@2c99c8d
+2026-08-11T00:15:20.889+01:00  INFO 13704 --- [smartCommerce] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-08-11T00:15:20.928+01:00  INFO 13704 --- [smartCommerce] [           main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:postgresql://localhost:5432/smartCommerce (PostgreSQL 15.6)
+2026-08-11T00:15:21.014+01:00  INFO 13704 --- [smartCommerce] [           main] o.f.core.internal.command.DbValidate     : Successfully validated 2 migrations (execution time 00:00.045s)
+2026-08-11T00:15:21.073+01:00  INFO 13704 --- [smartCommerce] [           main] o.f.core.internal.command.DbMigrate      : Current version of schema "public": 2
+2026-08-11T00:15:21.077+01:00  INFO 13704 --- [smartCommerce] [           main] o.f.core.internal.command.DbMigrate      : Schema "public" is up to date. No migration necessary.
+2026-08-11T00:15:21.194+01:00  INFO 13704 --- [smartCommerce] [           main] org.hibernate.orm.jpa                    : HHH008540: Processing PersistenceUnitInfo [name: default]
+2026-08-11T00:15:21.265+01:00  INFO 13704 --- [smartCommerce] [           main] org.hibernate.orm.core                   : HHH000001: Hibernate ORM core version 7.2.19.Final
+2026-08-11T00:15:21.922+01:00  INFO 13704 --- [smartCommerce] [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-08-11T00:15:22.026+01:00  INFO 13704 --- [smartCommerce] [           main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [jdbc:postgresql://localhost:5432/smartCommerce]
+	Database driver: PostgreSQL JDBC Driver
+	Database dialect: PostgreSQLDialect
+	Database version: 15.6
+	Default catalog/schema: smartCommerce/public
+	Autocommit mode: undefined/unknown
+	Isolation level: READ_COMMITTED [default READ_COMMITTED]
+	JDBC fetch size: none
+	Pool: DataSourceConnectionProvider
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-08-11T00:15:23.265+01:00  INFO 13704 --- [smartCommerce] [           main] org.hibernate.orm.core                   : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-08-11T00:15:23.318+01:00  INFO 13704 --- [smartCommerce] [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-08-11T00:15:23.415+01:00  INFO 13704 --- [smartCommerce] [           main] o.s.d.j.r.query.QueryEnhancerFactories   : Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-08-11T00:15:25.174+01:00  INFO 13704 --- [smartCommerce] [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 8080 (http) with context path '/'
+2026-08-11T00:15:25.180+01:00  INFO 13704 --- [smartCommerce] [           main] c.s.s.SmartCommerceApplication           : Started SmartCommerceApplication in 7.448 seconds (process running for 8.024)
+2026-08-11T00:15:37.086+01:00  INFO 13704 --- [smartCommerce] [nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-08-11T00:15:37.086+01:00  INFO 13704 --- [smartCommerce] [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-08-11T00:15:37.088+01:00  INFO 13704 --- [smartCommerce] [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+2026-08-11T00:15:37.336+01:00  WARN 13704 --- [smartCommerce] [nio-8080-exec-1] ration$PageModule$WarningLoggingModifier : Serializing PageImpl instances as-is is not supported, meaning that there is no guarantee about the stability of the resulting JSON structure!
+	For a stable JSON structure, please use Spring Data's PagedModel (globally via @EnableSpringDataWebSupport(pageSerializationMode = VIA_DTO))
+	or Spring HATEOAS and Spring Data's PagedResourcesAssembler as documented in https://docs.spring.io/spring-data/commons/reference/repositories/core-extensions.html#core.web.pageables.
+

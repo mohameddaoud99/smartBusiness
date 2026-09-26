@@ -1,0 +1,3 @@
+-- SmartCommerce ERP - Initial Schema
+-- Business entity tables will be added in subsequent migrations
+-- Example: V2__create_customers_table.sql, V3__create_products_table.sql, etc.
